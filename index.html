@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#0e0e0c">
 <meta name="description" content="The Way — a daily practice of undoing. One lesson each day for a year. An oracle to consult when the way is unclear. A practice of letting go, carried in the pocket.">
 <title>The Way — A Daily Practice of Undoing</title>
+<link rel="manifest" href="/manifest.json">  
 <link rel="canonical" href="https://theunwindingway.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://theunwindingway.com/">
@@ -9910,5 +9911,10 @@ function App() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(React.createElement(App));
 </script>
+<script>                                           
+if ('serviceWorker' in navigator) {                 
+  navigator.serviceWorker.register('/sw.js');       
+}                                                   
+</script>     
 </body>
 </html>
