@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.theunwindingway.app",
+      "sha256_cert_fingerprints": [
+        "86:1C:D7:9B:3A:E3:0C:21:56:5C:DE:FB:8A:BE:23:77:BD:CF:3A:E8:C9:D8:A2:0E:D0:14:A2:19:6A:66:70:DA"
+      ]
+    }
+  }
+]
