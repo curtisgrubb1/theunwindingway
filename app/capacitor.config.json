@@ -1,0 +1,30 @@
+{
+  "appId": "com.curtisgrubb.theway",
+  "appName": "The Way",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0e0e0c",
+    "limitsNavigationsToAppBoundDomains": true
+  },
+  "server": {
+    "iosScheme": "capacitor",
+    "androidScheme": "https",
+    "allowNavigation": []
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "backgroundColor": "#0e0e0c",
+      "showSpinner": false,
+      "launchAutoHide": true
+    },
+    "Preferences": {
+      "group": "group.com.curtisgrubb.theway"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#c4956a"
+    }
+  }
+}

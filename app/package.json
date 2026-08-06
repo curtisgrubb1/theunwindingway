@@ -1,0 +1,31 @@
+{
+  "name": "theway-ios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Way — iOS bundle. Builds from the canonical ../index.html; never edit the app here.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "sync": "npm run build && npx cap sync ios",
+    "open": "npx cap open ios",
+    "ship": "npm run build && npx cap sync ios && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.0",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.5.0",
+    "@capacitor/local-notifications": "8.2.1",
+    "@capacitor/preferences": "8.0.1",
+    "@capacitor/share": "8.0.1",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.3",
+    "@fontsource/cormorant-garamond": "^5.0.0",
+    "@fontsource/dm-sans": "^5.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.0"
+  }
+}
