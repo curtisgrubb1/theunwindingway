@@ -50,8 +50,8 @@ npx cap open ios
 2. **Deployment target** — iOS 15.0 or higher.
 3. **App Group** — Signing & Capabilities ▸ `+` ▸ App Groups ▸ add
    `group.com.curtisgrubb.theway`. This is how the widget reads your current day.
-4. **Icons** — drag a 1024×1024 PNG into `Assets.xcassets ▸ AppIcon`. Must have
-   no alpha channel and no rounded corners; Apple rounds it.
+4. **Icons** — drag `ios-assets/AppIcon-1024.png` into `Assets.xcassets ▸ AppIcon`.
+   Already 1024×1024, no alpha, square corners; Apple applies the rounding.
 5. **Launch screen** — set the background to `#0e0e0c` so the cold start doesn't
    flash white before the app paints.
 
