@@ -28,6 +28,36 @@ The build verifies this and fails if any external reference survives.
 
 ---
 
+## Durability
+
+A year of practice lives in `localStorage`, which is the least durable store iOS
+offers. It survives launches and app updates, but it is webview state and the
+system is entitled to reclaim it. Losing someone's progress on day 200 is a real
+harm, so `native.js` mirrors it:
+
+- **current day, welcomed flag** → Preferences (`UserDefaults`)
+- **the journal** → a JSON file in `DATA`, which is `Library/NoCloud` on iOS
+
+`NoCloud` is deliberate: nothing goes to iCloud, so "never transmitted anywhere"
+in the privacy statement stays literally true.
+
+Restore only ever fills a gap — anything already in `localStorage` wins, so a
+stale mirror can never overwrite live state. When a restore does happen the app
+reloads once so React picks it up; it cannot loop, because the next pass finds
+`localStorage` populated.
+
+```bash
+npm test
+```
+
+Boots the real `native.js` against mocked plugins and covers four cases: normal
+mirroring, recovery after data loss, healthy data left untouched, and a
+deliberate journal deletion not being resurrected. Run it whenever `native.js`
+changes — this code only ever runs on the day something has gone wrong, and its
+failure mode is silent.
+
+---
+
 ## One-time setup
 
 Requires a Mac, Xcode 16+, Node 20+, and CocoaPods (`sudo gem install cocoapods`).

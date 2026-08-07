@@ -20,6 +20,13 @@
   var SERIF = "'Cormorant Garamond',serif";
   var SANS = "'DM Sans',sans-serif";
 
+  // Everything below fails soft so a broken native path can never take the app
+  // down. That makes silent no-ops the default failure mode, so say something.
+  // Visible in Safari ▸ Develop ▸ Simulator ▸ index.html.
+  function diag(msg, err) {
+    try { console.log('[The Way] ' + msg, err === undefined ? '' : err); } catch (e) {}
+  }
+
   // ── haptics ────────────────────────────────────────────────────────────────
   // One light tap as each of the six lines resolves; a heavier note when the
   // whole reading lands. The cast becomes something you feel, not just watch.
@@ -36,14 +43,176 @@
   // WKWebView has no Web Share API. The app already calls navigator.share with a
   // clipboard fallback, so shimming it here means the existing code just works.
 
-  if (P.Share) {
-    navigator.share = function (data) {
-      return P.Share.share({
-        title: data && data.title,
-        text: data && data.text,
-        dialogTitle: 'Share',
-      });
+  // Set to null so the wrapper around buildReadingShareText knows to populate it.
+  // Left undefined on the web build, where that assignment is skipped entirely.
+  window.__twShareCtx = null;
+
+  var INK = '#0e0e0c';
+  var CREAM = '#e9dfcb';
+
+  // The six lines of a hexagram, bottom first, derived from its King Wen number
+  // by inverting the lookup table. Works from the journal too, where the reading
+  // object carries a number but no trigram data.
+  function hexLines(num) {
+    try {
+      var n = parseInt(num, 10);
+      for (var lBin in TRI_IDX) {
+        for (var uBin in TRI_IDX) {
+          if (KW[TRI_IDX[lBin]][TRI_IDX[uBin]] === n) return (lBin + uBin).split('');
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  // Hexagram names all take the form
+  //   "Breakthrough (Resoluteness) · Guài  (☱ over ☰ — Lake over Heaven)"
+  // which is far too long to set on one line. Split it into its three parts so
+  // the card can typeset them, and drop the trigram glyphs — the bundled fonts
+  // are Latin-only and those characters would render as empty boxes.
+  function parseHexName(raw) {
+    var s = String(raw || '');
+    var out = { title: s, pinyin: '', gloss: '' };
+    var dot = s.indexOf(' · ');
+    if (dot < 0) return out;
+    out.title = s.slice(0, dot).trim();
+    var rest = s.slice(dot + 3).trim();
+    var op = rest.indexOf('(');
+    if (op < 0) { out.pinyin = rest; return out; }
+    out.pinyin = rest.slice(0, op).trim();
+    var inside = rest.slice(op + 1).replace(/\)\s*$/, '');
+    var dash = inside.indexOf('—');
+    out.gloss = (dash >= 0 ? inside.slice(dash + 1) : inside).trim();
+    return out;
+  }
+
+  // Draw the reading as a card. Changing lines are drawn in gold against the
+  // cream of the still ones — the traditional marks say the same thing with
+  // more noise.
+  function drawCard(ctx3) {
+    var W = 1080, H = 1350;
+    var c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    var g = c.getContext('2d');
+
+    g.fillStyle = INK;
+    g.fillRect(0, 0, W, H);
+
+    var h1 = ctx3.h1 || {};
+    var chg = ctx3.chg || [];
+    var h2 = ctx3.h2;
+    var lines = hexLines(h1.num);
+    if (!lines) return null;
+
+    var MAXW = 900; // 90px of air either side
+
+    function center(text, y, font, color, spacing) {
+      if (!text) return;
+      g.font = font;
+      g.fillStyle = color;
+      g.textAlign = 'center';
+      try { g.letterSpacing = (spacing || 0) + 'px'; } catch (e) {}
+      g.fillText(text, W / 2, y);
+      try { g.letterSpacing = '0px'; } catch (e) {}
+    }
+
+    // Shrink until it fits rather than letting it run off the edge. Titles
+    // range from "Peace" to "The Taming Power of the Great".
+    function fitted(text, startPx, minPx, tmpl) {
+      var px = startPx;
+      while (px > minPx) {
+        g.font = tmpl(px);
+        if (g.measureText(text).width <= MAXW) break;
+        px -= 2;
+      }
+      return tmpl(px);
+    }
+
+    var serif = function (px) { return '300 ' + px + 'px "Cormorant Garamond", serif'; };
+    var serifI = function (px) { return 'italic 300 ' + px + 'px "Cormorant Garamond", serif'; };
+
+    center('THE WAY', 150, '500 22px "DM Sans", sans-serif', 'rgba(196,149,106,.42)', 7);
+
+    // Six lines, bottom-up, in the geometry of the app icon.
+    var barW = 620, barH = 24, step = 74, gap = 120;
+    var x0 = (W - barW) / 2, yTop = 300;
+    for (var i = 0; i < 6; i++) {
+      var y = yTop + (5 - i) * step;
+      g.fillStyle = chg.indexOf(i) >= 0 ? GOLD : CREAM;
+      if (lines[i] === '1') {
+        g.fillRect(x0, y, barW, barH);                       // yang — unbroken
+      } else {
+        var seg = (barW - gap) / 2;                          // yin — broken
+        g.fillRect(x0, y, seg, barH);
+        g.fillRect(x0 + seg + gap, y, seg, barH);
+      }
+    }
+
+    var n1 = parseHexName(h1.name);
+
+    center('HEXAGRAM ' + h1.num, 800, '400 22px "DM Sans", sans-serif', 'rgba(196,149,106,.5)', 5);
+    center(n1.title, 880, fitted(n1.title, 62, 30, serif), 'rgba(233,223,203,.92)');
+    center(n1.pinyin, 945, serifI(34), 'rgba(196,149,106,.6)');
+    center(n1.gloss ? n1.gloss.toUpperCase() : '', 1002,
+      '400 17px "DM Sans", sans-serif', 'rgba(212,208,200,.28)', 4);
+
+    if (h2 && h2.num) {
+      var t2 = 'changing to ' + h2.num + ' · ' + parseHexName(h2.name).title;
+      center(t2, 1090, fitted(t2, 32, 20, serifI), 'rgba(212,208,200,.4)');
+    }
+
+    center('theunwindingway.com', 1270, '400 18px "DM Sans", sans-serif', 'rgba(196,149,106,.25)', 3);
+
+    return c.toDataURL('image/png');
+  }
+
+  function shareWithCard(data) {
+    var payload = {
+      title: data && data.title,
+      text: data && data.text,
+      dialogTitle: 'Share',
     };
+
+    var ctx3 = window.__twShareCtx;
+    if (!P.Filesystem || !ctx3 || !ctx3.h1) return P.Share.share(payload);
+
+    // Canvas needs the bundled faces resolved before it can draw with them,
+    // otherwise it silently falls back to a system serif.
+    var ready = document.fonts && document.fonts.load
+      ? Promise.all([
+          document.fonts.load('300 62px "Cormorant Garamond"'),
+          document.fonts.load('400 22px "DM Sans"'),
+        ]).catch(function () {})
+      : Promise.resolve();
+
+    return ready
+      .then(function () {
+        var url = drawCard(ctx3);
+        if (!url) throw new Error('card not drawn');
+        return P.Filesystem.writeFile({
+          path: 'reading-' + ctx3.h1.num + '.png',
+          data: url.split(',')[1],
+          directory: 'CACHE',
+        });
+      })
+      .then(function () {
+        return P.Filesystem.getUri({
+          path: 'reading-' + ctx3.h1.num + '.png',
+          directory: 'CACHE',
+        });
+      })
+      .then(function (res) {
+        payload.files = [res.uri];
+        return P.Share.share(payload);
+      })
+      .catch(function (e) {
+        diag('card share failed, falling back to text', e);
+        return P.Share.share(payload);
+      });
+  }
+
+  if (P.Share) {
+    navigator.share = function (data) { return shareWithCard(data); };
   }
 
   // ── chrome ─────────────────────────────────────────────────────────────────
@@ -67,9 +236,21 @@
   // capacitor.config.json; on iOS these land in UserDefaults under
   // the "CapacitorStorage." prefix, which the Swift widget reads directly.
 
+  // LESSONS is declared with `const` at the top level of a classic script. That
+  // creates a global *lexical* binding, which is never exposed as a property of
+  // window — so it must be read as a bare identifier. Reading window.LESSONS
+  // returns undefined and silently breaks both the reminders and the widget.
+  function allLessons() {
+    try {
+      return (typeof LESSONS !== 'undefined' && LESSONS && LESSONS.length) ? LESSONS : null;
+    } catch (e) {
+      return null; // still in the temporal dead zone
+    }
+  }
+
   function lessonFor(day) {
-    var L = window.LESSONS;
-    if (!L || !L.length) return null;
+    var L = allLessons();
+    if (!L) { diag('lesson data not reachable'); return null; }
     var i = Math.max(1, Math.min(L.length, day || 1)) - 1;
     return L[i] || null;
   }
@@ -88,7 +269,8 @@
       P.Preferences.set({ key: 'widget_day', value: String(day) });
       P.Preferences.set({ key: 'widget_title', value: String(lesson.title || '') });
       if (P.WidgetsBridge) P.WidgetsBridge.reloadAllTimelines();
-    } catch (e) {}
+      diag('widget state synced — day ' + day);
+    } catch (e) { diag('widget sync failed', e); }
   }
 
   // ── daily reminder ─────────────────────────────────────────────────────────
@@ -115,7 +297,10 @@
   }
 
   function schedule() {
-    if (!P.LocalNotifications) return Promise.resolve();
+    if (!P.LocalNotifications) {
+      diag('LocalNotifications plugin not registered — did `npx cap sync ios` run?');
+      return Promise.resolve();
+    }
     return clearScheduled().then(function () {
       if (!remindOn()) return;
 
@@ -141,19 +326,26 @@
           schedule: { at: when, allowWhileIdle: true },
         });
       }
-      if (!items.length) return;
-      return P.LocalNotifications.schedule({ notifications: items });
-    }).catch(function () {});
+      if (!items.length) {
+        diag('nothing scheduled — no lesson data available');
+        return;
+      }
+      return P.LocalNotifications.schedule({ notifications: items })
+        .then(function () {
+          diag('scheduled ' + items.length + ' reminders, first at ' + first.toLocaleString());
+        })
+        .catch(function (e) { diag('schedule failed', e); });
+    }).catch(function (e) { diag('schedule failed', e); });
   }
 
   function enable() {
     if (!P.LocalNotifications) return Promise.resolve(false);
     return P.LocalNotifications.requestPermissions().then(function (res) {
       var ok = res && (res.display === 'granted' || res.display === 'prompt-with-rationale');
-      if (!ok) return false;
+      if (!ok) { diag('notification permission not granted: ' + (res && res.display)); return false; }
       localStorage.setItem(PREF_ON, '1');
       return schedule().then(function () { return true; });
-    }).catch(function () { return false; });
+    }).catch(function (e) { diag('requestPermissions failed', e); return false; });
   }
 
   function disable() {
@@ -250,22 +442,148 @@
     return R.createElement(Reminder);
   };
 
+  // ── durability ─────────────────────────────────────────────────────────────
+  // A year of practice lives in localStorage, which is the least durable store
+  // iOS offers. It survives launches and app updates, but it is webview state
+  // and the system is entitled to reclaim it. Losing someone's progress on day
+  // 200 is a real harm, so everything is mirrored somewhere sturdier:
+  //
+  //   the current day, and whether they have been welcomed  →  Preferences (UserDefaults)
+  //   the journal                                           →  a JSON file on disk
+  //
+  // The file lives in DATA, which is Library/NoCloud on iOS — deliberately not
+  // backed up to iCloud, so "never transmitted anywhere" stays literally true.
+
+  var MIRROR_KEYS = ['theway_currentDay', 'theway_welcomed'];
+  var J_PREFIX = 'theway_j:';
+  var BACKUP = 'journal-backup.json';
+
+  var _set = localStorage.setItem.bind(localStorage);
+  var _remove = localStorage.removeItem.bind(localStorage);
+  var backupTimer = null;
+
+  function journalEntries() {
+    var out = {}, n = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(J_PREFIX) === 0) { out[k] = localStorage.getItem(k); n++; }
+    }
+    return { entries: out, count: n };
+  }
+
+  function writeBackup() {
+    if (!P.Filesystem) return;
+    var j = journalEntries();
+    P.Filesystem.writeFile({
+      path: BACKUP,
+      data: JSON.stringify({ v: 1, at: Date.now(), journal: j.entries }),
+      directory: 'DATA',
+      encoding: 'utf8',
+    })
+      .then(function () { diag('journal backed up — ' + j.count + ' entries'); })
+      .catch(function (e) { diag('journal backup failed', e); });
+  }
+
+  // Journal writes can arrive in bursts; coalesce them.
+  function scheduleBackup() {
+    clearTimeout(backupTimer);
+    backupTimer = setTimeout(writeBackup, 2000);
+  }
+
+  // Only ever restores into a gap. Anything already in localStorage wins —
+  // this must never overwrite live state with something stale.
+  function restore() {
+    var restored = 0;
+    var jobs = [];
+
+    if (P.Preferences) {
+      MIRROR_KEYS.forEach(function (k) {
+        if (localStorage.getItem(k) !== null) return;
+        jobs.push(
+          P.Preferences.get({ key: k })
+            .then(function (r) {
+              if (r && r.value !== null && r.value !== undefined) {
+                _set(k, r.value);
+                restored++;
+                diag('restored ' + k + ' = ' + r.value);
+              }
+            })
+            .catch(function () {})
+        );
+      });
+    }
+
+    if (P.Filesystem && journalEntries().count === 0) {
+      jobs.push(
+        P.Filesystem.readFile({ path: BACKUP, directory: 'DATA', encoding: 'utf8' })
+          .then(function (r) {
+            var data = JSON.parse(r.data);
+            var n = 0;
+            for (var k in data.journal) { _set(k, data.journal[k]); n++; }
+            if (n) { restored += n; diag('restored ' + n + ' journal entries'); }
+          })
+          .catch(function () {}) // no backup yet is the normal case
+      );
+    }
+
+    return Promise.all(jobs).then(function () { return restored; });
+  }
+
+  // ── mirroring ──────────────────────────────────────────────────────────────
+  // The app writes progress straight to localStorage, and the storage event
+  // does not fire for changes made in the same document — so intercept.
+
+  localStorage.setItem = function (k, v) {
+    _set(k, v);
+    try {
+      if (MIRROR_KEYS.indexOf(k) >= 0 && P.Preferences) {
+        P.Preferences.set({ key: k, value: String(v) });
+      }
+      if (k.indexOf(J_PREFIX) === 0) scheduleBackup();
+      if (k === 'theway_currentDay') { syncWidget(); if (remindOn()) schedule(); }
+    } catch (e) { diag('mirror failed for ' + k, e); }
+  };
+
+  localStorage.removeItem = function (k) {
+    _remove(k);
+    try {
+      if (MIRROR_KEYS.indexOf(k) >= 0 && P.Preferences) P.Preferences.remove({ key: k });
+      if (k.indexOf(J_PREFIX) === 0) scheduleBackup();
+    } catch (e) { diag('mirror removal failed for ' + k, e); }
+  };
+
   // ── lifecycle ──────────────────────────────────────────────────────────────
 
   function refresh() { syncWidget(); if (remindOn()) schedule(); }
 
-  if (document.readyState === 'complete') setTimeout(refresh, 600);
-  else window.addEventListener('load', function () { setTimeout(refresh, 600); });
+  var reloaded = false;
+
+  function start() {
+    restore().then(function (restored) {
+      // React has already read localStorage by now, so a restore has to be
+      // followed by a reload to be visible. This is the exceptional path: it
+      // only runs when data was actually lost, and cannot loop, because the
+      // next pass finds localStorage populated and restores nothing.
+      if (restored > 0 && !reloaded) {
+        reloaded = true;
+        diag('restored ' + restored + ' item(s) — reloading to apply');
+        location.reload();
+        return;
+      }
+      refresh();
+      scheduleBackup(); // ensure a backup exists even with no writes this session
+    });
+  }
+
+  if (document.readyState === 'complete') setTimeout(start, 600);
+  else window.addEventListener('load', function () { setTimeout(start, 600); });
 
   try {
-    if (P.App) P.App.addListener('appStateChange', function (st) { if (st && st.isActive) refresh(); });
+    if (P.App) {
+      P.App.addListener('appStateChange', function (st) {
+        if (st && st.isActive) refresh();
+        else writeBackup(); // flush on the way to the background
+      });
+    }
   } catch (e) {}
-
-  // The app writes progress straight to localStorage; catch changes made in
-  // this tab, which the storage event does not fire for.
-  var _set = localStorage.setItem.bind(localStorage);
-  localStorage.setItem = function (k, v) {
-    _set(k, v);
-    if (k === 'theway_currentDay') { syncWidget(); if (remindOn()) schedule(); }
-  };
 })();

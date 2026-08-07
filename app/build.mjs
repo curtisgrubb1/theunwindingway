@@ -210,7 +210,19 @@ html = transform(html, {
   replace: '<meta name="theway-build" content="ios"><meta name="viewport"',
 });
 
-// 8. Strip web-only SEO and social metadata. None of it is ever fetched, but a
+// 8. Capture the reading being shared.
+//    Both share buttons — the journal entry and the live reading — build their
+//    text through this one function, so wrapping it here catches both and any
+//    future caller, without touching either call site.
+html = transform(html, {
+  name: 'share-context',
+  find: 'function buildReadingShareText(h1, chg, h2) {\n  if (!h1) return "";',
+  replace: 'function buildReadingShareText(h1, chg, h2) {\n' +
+           '  if (window.__twShareCtx !== undefined) window.__twShareCtx = { h1: h1, chg: chg, h2: h2 };\n' +
+           '  if (!h1) return "";',
+});
+
+// 9. Strip web-only SEO and social metadata. None of it is ever fetched, but a
 //    native bundle that references no external host at all is easier to defend
 //    in review and keeps the verification below honest.
 {

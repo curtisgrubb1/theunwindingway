@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
+    "test": "node test/durability.test.mjs",
     "sync": "npm run build && npx cap sync ios",
     "open": "npx cap open ios",
     "ship": "npm run build && npx cap sync ios && npx cap open ios"
@@ -13,6 +14,7 @@
   "dependencies": {
     "@capacitor/app": "8.1.1",
     "@capacitor/core": "8.5.0",
+    "@capacitor/filesystem": "8.1.2",
     "@capacitor/haptics": "8.0.2",
     "@capacitor/ios": "8.5.0",
     "@capacitor/local-notifications": "8.2.1",
