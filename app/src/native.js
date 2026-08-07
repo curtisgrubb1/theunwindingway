@@ -314,19 +314,22 @@
 
       var now = new Date();
       var first = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
+      if (first <= now) first.setDate(first.getDate() + 1);
 
-      // If today's reminder time has already passed, the first notification
-      // lands tomorrow — which is the NEXT lesson, not the one they are on
-      // today. Without this offset every reminder runs a day behind.
-      var offset = 0;
-      if (first <= now) { first.setDate(first.getDate() + 1); offset = 1; }
-
-      var start = currentIndex() + offset;
+      // Every scheduled reminder names the lesson they are on right now, and
+      // claims nothing about the future. The workbook gives one lesson a day,
+      // but people sit with a lesson for several days, and predicting forward
+      // would name a lesson they never reached. Rescheduling happens on every
+      // app open and whenever the day changes — which is exactly when someone
+      // advances — so this stays true without guessing.
+      var lesson = lessonAt(currentIndex());
+      if (!lesson) {
+        diag('nothing scheduled — no lesson data available');
+        return;
+      }
 
       var items = [];
       for (var i = 0; i < HORIZON; i++) {
-        var lesson = lessonAt(start + i);
-        if (!lesson) break; // past the end of the year
         var when = new Date(first.getTime());
         when.setDate(when.getDate() + i);
         items.push({
@@ -335,10 +338,6 @@
           body: lesson.title,
           schedule: { at: when, allowWhileIdle: true },
         });
-      }
-      if (!items.length) {
-        diag('nothing scheduled — no lesson data available');
-        return;
       }
       return P.LocalNotifications.schedule({ notifications: items })
         .then(function () {
@@ -362,6 +361,26 @@
     localStorage.setItem(PREF_ON, '0');
     return clearScheduled();
   }
+
+  // ── tapping a reminder ─────────────────────────────────────────────────────
+  // Land on the practice, not on wherever the app was left. The listener is
+  // registered before React mounts, so on a cold start __twGo does not exist
+  // yet — wait for it rather than dropping the tap.
+
+  function openLesson() {
+    var tries = 0;
+    (function attempt() {
+      if (typeof window.__twGo === 'function') { window.__twGo('lesson'); return; }
+      if (tries++ < 40) setTimeout(attempt, 100);
+      else diag('could not open lesson — navigation bridge never appeared');
+    })();
+  }
+
+  try {
+    if (P.LocalNotifications) {
+      P.LocalNotifications.addListener('localNotificationActionPerformed', openLesson);
+    }
+  } catch (e) { diag('notification tap listener failed', e); }
 
   // ── reminder control (About screen) ────────────────────────────────────────
 

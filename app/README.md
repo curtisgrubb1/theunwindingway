@@ -70,9 +70,14 @@ required, no simulator, about two seconds.
 **Durability** — normal mirroring, recovery after data loss, healthy data left
 untouched, and a deliberate journal deletion not being resurrected.
 
-**Scheduling** — the index-vs-day mapping above, the calendar offset when
-today's reminder time has already passed, the end of the year not wrapping, and
-the horizon staying under the iOS cap of 64 pending notifications.
+**Scheduling** — the index-vs-day mapping above, and the contract that reminders
+**never project forward**. Every scheduled notification names the lesson the
+practitioner is on right now. The workbook gives one lesson a day, but people
+sit with a lesson for several days, and guessing ahead would name a lesson they
+never reached. Rescheduling happens on app open and whenever the day changes —
+which is exactly when someone advances — so it stays true without predicting.
+Also covers the end of the year not wrapping, and the horizon staying under the
+iOS cap of 64 pending notifications.
 
 Run them whenever `native.js` changes. Both cover code whose failure mode is
 silent: wrong lesson, or lost year.

@@ -210,7 +210,24 @@ html = transform(html, {
   replace: '<meta name="theway-build" content="ios"><meta name="viewport"',
 });
 
-// 8. Capture the reading being shared.
+// 8. Expose the navigation function so a tapped reminder can land on the
+//    practice rather than wherever the app happened to be. `go` is defined
+//    directly above this anchor. Assignment is guarded so the web build is
+//    untouched — __twShareCtx is only ever defined by the native layer.
+html = transform(html, {
+  name: 'nav-bridge',
+  find: '  const showToast = msg => {\n' +
+        '    setToast(msg);\n' +
+        '    setTimeout(() => setToast(null), 2000);\n' +
+        '  };',
+  replace: '  const showToast = msg => {\n' +
+           '    setToast(msg);\n' +
+           '    setTimeout(() => setToast(null), 2000);\n' +
+           '  };\n' +
+           '  if (window.__twShareCtx !== undefined) window.__twGo = go;',
+});
+
+// 9. Capture the reading being shared.
 //    Both share buttons — the journal entry and the live reading — build their
 //    text through this one function, so wrapping it here catches both and any
 //    future caller, without touching either call site.
@@ -222,7 +239,7 @@ html = transform(html, {
            '  if (!h1) return "";',
 });
 
-// 9. Strip web-only SEO and social metadata. None of it is ever fetched, but a
+// 10. Strip web-only SEO and social metadata. None of it is ever fetched, but a
 //    native bundle that references no external host at all is easier to defend
 //    in review and keeps the verification below honest.
 {
