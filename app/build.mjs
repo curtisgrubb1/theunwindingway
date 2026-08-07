@@ -110,6 +110,7 @@ function buildVendor() {
 const STATIC = [
   'favicon.ico', 'favicon.svg', 'favicon-16.png', 'favicon-32.png', 'favicon-96.png',
   'apple-touch-icon.png', 'icon-512.png',
+  'compass.png', // watermark behind the share card
   'icons/icon-192.png', 'icons/icon-512.png',
   'icons/icon-192-maskable.png', 'icons/icon-512-maskable.png',
 ];

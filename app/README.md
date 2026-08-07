@@ -108,8 +108,33 @@ npx cap open ios
    `group.com.curtisgrubb.theway`. This is how the widget reads your current day.
 4. **Icons** — drag `ios-assets/AppIcon-1024.png` into `Assets.xcassets ▸ AppIcon`.
    Already 1024×1024, no alpha, square corners; Apple applies the rounding.
-5. **Launch screen** — set the background to `#0e0e0c` so the cold start doesn't
-   flash white before the app paints.
+5. **Launch screen** — open `Base.lproj/LaunchScreen.storyboard`, set the view's
+   background to `#0E0E0C`, and confirm the view controller is still marked
+   **Is Initial View Controller** (without it the launch screen renders blank).
+   Then drag `ios-assets/launch-compass-2048.png` into `Assets.xcassets` and
+   point the storyboard's image view at it, centred, Aspect Fit, at about 55%
+   of the screen width. The compass appears for a moment and the app opens into
+   the practice.
+
+---
+
+## The marks
+
+Both marks come from one generator, so the site and the app cannot drift:
+
+```bash
+python3 tools/make-marks.py     # needs Pillow; outputs are committed
+```
+
+**The seal** — Hexagram 24 (Return) inside an open circle. The single yang line
+returning at the bottom after five lines of darkness, held in an ensō that stays
+open. Used small: app icon, favicons, touch icons. The returning line is gold,
+matching the share card, where gold means the line that moved.
+
+**The compass** — the double bagua. Earlier Heaven outside, where every trigram
+faces its exact inverse; Later Heaven inside, the directional and seasonal
+arrangement. No trigram holds the same position in both. Built the way a luopan
+is built, and used only where it can be read: launch screen, site header.
 
 ### The widget
 

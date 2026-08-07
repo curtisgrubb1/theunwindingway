@@ -50,6 +50,18 @@
   var INK = '#0e0e0c';
   var CREAM = '#e9dfcb';
 
+  // The double bagua, sitting behind the reading as a watermark. Loaded from
+  // the bundle rather than redrawn here, so the card and the launch screen are
+  // literally the same mark and cannot drift. Preloaded now; if it hasn't
+  // arrived by the time someone shares, the card simply draws without it.
+  var compassImg = null;
+  try {
+    var im = new Image();
+    im.onload = function () { compassImg = im; };
+    im.onerror = function () { diag('compass watermark failed to load'); };
+    im.src = 'compass.png';
+  } catch (e) {}
+
   // The six lines of a hexagram, bottom first, derived from its King Wen number
   // by inverting the lookup table. Works from the journal too, where the reading
   // object carries a number but no trigram data.
@@ -97,6 +109,16 @@
 
     g.fillStyle = INK;
     g.fillRect(0, 0, W, H);
+
+    // Watermark, centred on the six lines. Faint enough to read as texture
+    // rather than as a second thing competing with the reading.
+    if (compassImg && compassImg.naturalWidth) {
+      var cw = W * 0.80;
+      g.save();
+      g.globalAlpha = 0.075;
+      g.drawImage(compassImg, (W - cw) / 2, 497 - cw / 2, cw, cw);
+      g.restore();
+    }
 
     var h1 = ctx3.h1 || {};
     var chg = ctx3.chg || [];
