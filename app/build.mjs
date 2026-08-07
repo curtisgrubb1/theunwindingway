@@ -203,8 +203,11 @@ html = transform(html, {
   replace: '}, "curtis@curtisgrubb.org"), window.__twReminderEl ? window.__twReminderEl() : null, ',
 });
 
-// 7. Native viewport: respect the safe area so content clears the notch and
-//    home indicator, and disable the pinch-zoom that makes a webview feel like a webview.
+// 7. Tag the build. Pinch-zoom is deliberately LEFT ENABLED — it is the only
+//    magnification an iOS webview offers, so switching it off would remove a
+//    real accessibility affordance. Involuntary zoom is prevented instead by
+//    keeping every input at 16px or larger, the threshold below which iOS
+//    zooms automatically on focus.
 html = transform(html, {
   name: 'viewport-native',
   find: '<meta name="viewport"',
