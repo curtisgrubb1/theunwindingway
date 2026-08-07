@@ -19,9 +19,6 @@
       "showSpinner": false,
       "launchAutoHide": true
     },
-    "Preferences": {
-      "group": "group.com.curtisgrubb.theway"
-    },
     "LocalNotifications": {
       "smallIcon": "ic_stat_icon",
       "iconColor": "#c4956a"

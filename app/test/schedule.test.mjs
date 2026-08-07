@@ -96,7 +96,7 @@ console.log('\nnative.js — reminder scheduling\n');
 // A fresh install stores index 0, which means lesson 1 — not day 0.
 console.log('fresh install, reminder later today (20:00)');
 let n = await run({ index: 0, at: '20:00', now: NOW });
-check('title', n[0].title, 'Day 1');
+check('title', n[0].title, 'Lesson 1');
 check('body', n[0].body, 'L1');
 check('first fires 6th', dayOf(n[0].schedule.at), 6);
 check('second fires 7th', dayOf(n[1].schedule.at), 7);
@@ -105,28 +105,28 @@ check('second fires 7th', dayOf(n[1].schedule.at), 7);
 // names the lesson they are on, because they may not have advanced.
 console.log('\nreminder time already passed (07:00)');
 n = await run({ index: 0, at: '07:00', now: NOW });
-check('title', n[0].title, 'Day 1');
+check('title', n[0].title, 'Lesson 1');
 check('first fires 7th', dayOf(n[0].schedule.at), 7);
 
 // Index 5 is lesson 6. This is the mapping that was silently wrong.
 console.log('\nmid-practice, index 5 = lesson 6');
 n = await run({ index: 5, at: '20:00', now: NOW });
-check('title', n[0].title, 'Day 6');
+check('title', n[0].title, 'Lesson 6');
 check('body', n[0].body, 'L6');
 
 // The behavioural contract: no projection into the future.
 console.log('\ndoes not project forward');
 n = await run({ index: 5, at: '20:00', now: NOW });
-check('day 1 of horizon', n[0].title, 'Day 6');
-check('day 30 of horizon', n[29].title, 'Day 6');
-check('day 60 of horizon', n[59].title, 'Day 6');
+check('day 1 of horizon', n[0].title, 'Lesson 6');
+check('day 30 of horizon', n[29].title, 'Lesson 6');
+check('day 60 of horizon', n[59].title, 'Lesson 6');
 check('all identical', new Set(n.map((x) => x.title)).size, 1);
 
 // The last lesson must not wrap around to the start of the year.
 console.log('\nlast lesson, index 364 = lesson 365');
 n = await run({ index: 364, at: '20:00', now: NOW });
-check('title', n[0].title, 'Day 365');
-check('no wraparound', n.every((x) => x.title === 'Day 365'), 'true');
+check('title', n[0].title, 'Lesson 365');
+check('no wraparound', n.every((x) => x.title === 'Lesson 365'), 'true');
 
 // An index past the end of the data must schedule nothing, not crash.
 console.log('\nindex past the end of the year');

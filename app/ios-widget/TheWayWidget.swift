@@ -89,7 +89,7 @@ struct TheWayWidgetView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("DAY \(entry.day)")
+            Text("LESSON \(entry.day)")
                 .font(.system(size: 10, weight: .medium, design: .default))
                 .tracking(2.2)
                 .foregroundColor(.wayGold.opacity(0.55))
@@ -133,7 +133,7 @@ struct TheWayWidget: Widget {
             TheWayWidgetView(entry: entry)
         }
         .configurationDisplayName("Today's Lesson")
-        .description("The day you are on, and the lesson that belongs to it.")
+        .description("The lesson you are on, and its words.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

@@ -22,10 +22,29 @@
 
   // Everything below fails soft so a broken native path can never take the app
   // down. That makes silent no-ops the default failure mode, so say something.
-  // Visible in Safari ▸ Develop ▸ Simulator ▸ index.html.
+  // Forwarded to Xcode's console, prefixed with a lightning bolt.
   function diag(msg, err) {
     try { console.log('[The Way] ' + msg, err === undefined ? '' : err); } catch (e) {}
   }
+
+  // Capacitor.Plugins is built from the manifest the native bridge injects, and
+  // a plugin living in the app target rather than an npm package does not
+  // always land there. registerPlugin builds the proxy by name regardless,
+  // which is the documented way to reach app-local native code.
+  function plugin(name) {
+    try {
+      if (Cap.registerPlugin) return Cap.registerPlugin(name);
+    } catch (e) { diag('registerPlugin(' + name + ') failed', e); }
+    return P[name] || null;
+  }
+
+  try {
+    var headers = Cap.PluginHeaders;
+    diag('native plugins: ' + (headers && headers.length
+      ? headers.map(function (h) { return h.name; }).sort().join(', ')
+      : '(bridge injected no plugin manifest)'));
+  } catch (e) { diag('could not read plugin manifest', e); }
+
 
   // ── haptics ────────────────────────────────────────────────────────────────
   // One light tap as each of the six lines resolves; a heavier note when the
@@ -253,10 +272,11 @@
   document.head.appendChild(safe);
 
   // ── widget state ───────────────────────────────────────────────────────────
-  // Mirror the current lesson into the shared App Group so the home screen
-  // widget can read it. Preferences is configured with the group in
-  // capacitor.config.json; on iOS these land in UserDefaults under
-  // the "CapacitorStorage." prefix, which the Swift widget reads directly.
+  // Hand the current lesson to the widget through TheWayWidgetBridge, a small
+  // Swift plugin in the App target. Capacitor's Preferences plugin cannot do
+  // this: its `group` option is only a key prefix and it always writes to
+  // UserDefaults.standard, which an extension cannot see. The bridge writes to
+  // UserDefaults(suiteName:) and reloads the widget's timeline.
 
   // LESSONS is declared with `const` at the top level of a classic script. That
   // creates a global *lexical* binding, which is never exposed as a property of
@@ -292,12 +312,16 @@
       if (!P.Preferences) return;
       var lesson = lessonAt(currentIndex());
       if (!lesson) return;
+      // Written to the app's own storage; TheWayWidgetBridge mirrors these two
+      // keys into the shared App Group when the app goes inactive, which is
+      // when someone is on their way to look at the home screen.
       P.Preferences.set({ key: 'widget_day', value: String(lesson.day) });
       P.Preferences.set({ key: 'widget_title', value: String(lesson.title || '') });
-      if (P.WidgetsBridge) P.WidgetsBridge.reloadAllTimelines();
-      diag('widget state synced — day ' + lesson.day);
+      diag('widget state written — day ' + lesson.day);
     } catch (e) { diag('widget sync failed', e); }
   }
+
+
 
   // ── daily reminder ─────────────────────────────────────────────────────────
   // Off unless asked for. Rather than one repeating alert, this schedules the
@@ -356,7 +380,7 @@
         when.setDate(when.getDate() + i);
         items.push({
           id: 1000 + i,
-          title: 'Day ' + lesson.day,
+          title: 'Lesson ' + lesson.day,
           body: lesson.title,
           schedule: { at: when, allowWhileIdle: true },
         });

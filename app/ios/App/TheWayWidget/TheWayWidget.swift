@@ -1,84 +1,139 @@
 //
 //  TheWayWidget.swift
-//  TheWayWidget
+//  The Way — home screen widget
 //
-//  Created by Curtis Grubb on 8/7/26.
+//  Shows the day you are on and the lesson that belongs to it.
+//
+//  Reads state the web layer mirrors into the shared App Group via the
+//  Capacitor Preferences plugin. Nothing is computed here; the widget is a
+//  window onto the practice, not a second source of truth.
+//
+//  Add to Xcode:  File ▸ New ▸ Target ▸ Widget Extension  (name: TheWayWidget,
+//  uncheck "Include Configuration Intent"), then replace the generated file
+//  with this one and add the App Group to BOTH targets.
 //
 
 import WidgetKit
 import SwiftUI
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+// MARK: - Shared state
+
+private enum Shared {
+    static let group = "group.com.curtisgrubb.theway"
+
+    /// Capacitor Preferences namespaces its keys. Fall back to the bare key so
+    /// this keeps working if that prefix ever changes.
+    static func string(_ key: String) -> String? {
+        guard let defaults = UserDefaults(suiteName: group) else { return nil }
+        return defaults.string(forKey: "CapacitorStorage.\(key)")
+            ?? defaults.string(forKey: key)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
-        completion(entry)
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
-    }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
+    static var day: Int { Int(string("widget_day") ?? "") ?? 1 }
+    static var title: String { string("widget_title") ?? "Begin." }
 }
 
-struct SimpleEntry: TimelineEntry {
+// MARK: - Palette
+
+private extension Color {
+    static let wayGold = Color(red: 196 / 255, green: 149 / 255, blue: 106 / 255)
+    static let wayInk = Color(red: 14 / 255, green: 14 / 255, blue: 12 / 255)
+    static let wayText = Color(red: 212 / 255, green: 208 / 255, blue: 200 / 255)
+}
+
+// MARK: - Timeline
+
+struct LessonEntry: TimelineEntry {
     let date: Date
-    let emoji: String
+    let day: Int
+    let title: String
+
+    static let placeholder = LessonEntry(
+        date: Date(),
+        day: 1,
+        title: "Nothing I See Means Anything."
+    )
 }
 
-struct TheWayWidgetEntryView : View {
-    var entry: Provider.Entry
+struct LessonProvider: TimelineProvider {
+    func placeholder(in context: Context) -> LessonEntry { .placeholder }
+
+    func getSnapshot(in context: Context, completion: @escaping (LessonEntry) -> Void) {
+        completion(current())
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<LessonEntry>) -> Void) {
+        // One entry, refreshed at midnight. The lesson does not change during
+        // the day, and the app reloads timelines itself whenever the day turns.
+        let midnight = Calendar.current.nextDate(
+            after: Date(),
+            matching: DateComponents(hour: 0, minute: 1),
+            matchingPolicy: .nextTime
+        ) ?? Date().addingTimeInterval(3600)
+
+        completion(Timeline(entries: [current()], policy: .after(midnight)))
+    }
+
+    private func current() -> LessonEntry {
+        LessonEntry(date: Date(), day: Shared.day, title: Shared.title)
+    }
+}
+
+// MARK: - View
+
+struct TheWayWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    var entry: LessonEntry
+
+    private var titleLimit: Int { family == .systemSmall ? 3 : 2 }
 
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
+        VStack(alignment: .leading, spacing: 0) {
+            Text("LESSON \(entry.day)")
+                .font(.system(size: 10, weight: .medium, design: .default))
+                .tracking(2.2)
+                .foregroundColor(.wayGold.opacity(0.55))
 
-            Text("Emoji:")
-            Text(entry.emoji)
+            Rectangle()
+                .fill(Color.wayGold.opacity(0.18))
+                .frame(width: 26, height: 1)
+                .padding(.top, 8)
+
+            Spacer(minLength: 8)
+
+            Text(entry.title)
+                .font(.custom("CormorantGaramond-Light", size: family == .systemSmall ? 17 : 21))
+                .foregroundColor(.wayText.opacity(0.88))
+                .lineSpacing(3)
+                .lineLimit(titleLimit)
+                .minimumScaleFactor(0.75)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer(minLength: 0)
+
+            Text("THE WAY")
+                .font(.system(size: 8, weight: .regular))
+                .tracking(2.6)
+                .foregroundColor(.wayGold.opacity(0.28))
+                .padding(.top, 10)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .containerBackground(for: .widget) { Color.wayInk }
     }
 }
 
+// MARK: - Widget
+
+@main
 struct TheWayWidget: Widget {
-    let kind: String = "TheWayWidget"
+    let kind = "TheWayWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                TheWayWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                TheWayWidgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+        StaticConfiguration(kind: kind, provider: LessonProvider()) { entry in
+            TheWayWidgetView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("Today's Lesson")
+        .description("The lesson you are on, and its words.")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
-}
-
-#Preview(as: .systemSmall) {
-    TheWayWidget()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
 }

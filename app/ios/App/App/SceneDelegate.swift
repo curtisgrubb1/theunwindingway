@@ -21,4 +21,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         SceneDelegateProxy.shared.scene(scene, continue: userActivity)
     }
+
+    // The widget mirror lives here, not in AppDelegate. This app is scene-based
+    // — UIApplicationSceneManifest is present and config.delegateClass is set —
+    // so iOS never calls applicationWillResignActive or
+    // applicationDidEnterBackground. Only the scene equivalents fire.
+    func sceneWillResignActive(_ scene: UIScene) {
+        TheWayWidgetBridge.sync()
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        TheWayWidgetBridge.sync()
+    }
+
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        TheWayWidgetBridge.sync()
+    }
 }
