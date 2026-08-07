@@ -46,15 +46,36 @@ stale mirror can never overwrite live state. When a restore does happen the app
 reloads once so React picks it up; it cannot loop, because the next pass finds
 `localStorage` populated.
 
+## `theway_currentDay` is an index, not a day
+
+Worth knowing before touching anything that reads it. The app stores a
+**zero-based index into `LESSONS`** — it reads `LESSONS[day]` and writes
+`setDay(n - 1)`. A fresh install stores `0`, meaning lesson 1.
+
+Treating it as a day number is silently wrong: index 5 is lesson 6, so every
+reminder names the lesson before the one the practitioner is actually on. Read
+the number off `lesson.day` rather than doing the arithmetic a second time.
+
+---
+
+## Tests
+
 ```bash
 npm test
 ```
 
-Boots the real `native.js` against mocked plugins and covers four cases: normal
-mirroring, recovery after data loss, healthy data left untouched, and a
-deliberate journal deletion not being resurrected. Run it whenever `native.js`
-changes — this code only ever runs on the day something has gone wrong, and its
-failure mode is silent.
+Both suites boot the real `native.js` against mocked Capacitor plugins. No iOS
+required, no simulator, about two seconds.
+
+**Durability** — normal mirroring, recovery after data loss, healthy data left
+untouched, and a deliberate journal deletion not being resurrected.
+
+**Scheduling** — the index-vs-day mapping above, the calendar offset when
+today's reminder time has already passed, the end of the year not wrapping, and
+the horizon staying under the iOS cap of 64 pending notifications.
+
+Run them whenever `native.js` changes. Both cover code whose failure mode is
+silent: wrong lesson, or lost year.
 
 ---
 

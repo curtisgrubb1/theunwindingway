@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node test/durability.test.mjs",
+    "test": "node test/durability.test.mjs && node test/schedule.test.mjs",
     "sync": "npm run build && npx cap sync ios",
     "open": "npx cap open ios",
     "ship": "npm run build && npx cap sync ios && npx cap open ios"

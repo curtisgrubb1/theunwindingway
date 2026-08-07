@@ -248,28 +248,32 @@
     }
   }
 
-  function lessonFor(day) {
-    var L = allLessons();
-    if (!L) { diag('lesson data not reachable'); return null; }
-    var i = Math.max(1, Math.min(L.length, day || 1)) - 1;
-    return L[i] || null;
+  // theway_currentDay is a ZERO-BASED INDEX into LESSONS, not a day number.
+  // The app reads it as LESSONS[day] and writes it as setDay(n - 1), and a
+  // fresh install stores 0, meaning lesson 1. Every lesson also carries its own
+  // .day field, so read the number off the lesson rather than doing the
+  // arithmetic a second time here and getting it wrong.
+  function currentIndex() {
+    var d = parseInt(localStorage.getItem('theway_currentDay') || '0', 10);
+    return (isNaN(d) || d < 0) ? 0 : d;
   }
 
-  function currentDay() {
-    var d = parseInt(localStorage.getItem('theway_currentDay') || '1', 10);
-    return isNaN(d) ? 1 : d;
+  function lessonAt(index) {
+    var L = allLessons();
+    if (!L) { diag('lesson data not reachable'); return null; }
+    if (index < 0 || index >= L.length) return null;
+    return L[index];
   }
 
   function syncWidget() {
     try {
       if (!P.Preferences) return;
-      var day = currentDay();
-      var lesson = lessonFor(day);
+      var lesson = lessonAt(currentIndex());
       if (!lesson) return;
-      P.Preferences.set({ key: 'widget_day', value: String(day) });
+      P.Preferences.set({ key: 'widget_day', value: String(lesson.day) });
       P.Preferences.set({ key: 'widget_title', value: String(lesson.title || '') });
       if (P.WidgetsBridge) P.WidgetsBridge.reloadAllTimelines();
-      diag('widget state synced — day ' + day);
+      diag('widget state synced — day ' + lesson.day);
     } catch (e) { diag('widget sync failed', e); }
   }
 
@@ -308,20 +312,26 @@
       var hh = parseInt(at[0], 10) || 7;
       var mm = parseInt(at[1], 10) || 0;
 
-      var day = currentDay();
       var now = new Date();
       var first = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
-      if (first <= now) first.setDate(first.getDate() + 1);
+
+      // If today's reminder time has already passed, the first notification
+      // lands tomorrow — which is the NEXT lesson, not the one they are on
+      // today. Without this offset every reminder runs a day behind.
+      var offset = 0;
+      if (first <= now) { first.setDate(first.getDate() + 1); offset = 1; }
+
+      var start = currentIndex() + offset;
 
       var items = [];
       for (var i = 0; i < HORIZON; i++) {
+        var lesson = lessonAt(start + i);
+        if (!lesson) break; // past the end of the year
         var when = new Date(first.getTime());
         when.setDate(when.getDate() + i);
-        var lesson = lessonFor(day + i);
-        if (!lesson) break;
         items.push({
           id: 1000 + i,
-          title: 'Day ' + (day + i),
+          title: 'Day ' + lesson.day,
           body: lesson.title,
           schedule: { at: when, allowWhileIdle: true },
         });
