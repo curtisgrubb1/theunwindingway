@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# The iOS bundle has its own .gitignore (app/.gitignore) covering www/,
+# node_modules/ and the Capacitor build artifacts. Nothing here duplicates it.
+
+# Working notes that quote source material for the hexagram audit.
+# Reference only — never committed, never deployed.
+hexagram-audit-notes.txt
+*.audit-notes.txt
+
+# Editor scratch
+*.swp
+.idea/

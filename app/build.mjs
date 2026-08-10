@@ -264,6 +264,23 @@ console.log(`  index.html: ${(sourceBytes / 1024 / 1024).toFixed(2)} MB in, ${(h
 
 // ── verification ─────────────────────────────────────────────────────────────
 
+// Reference material must never reach a shipped bundle. The hexagram audit
+// quoted the Wilhelm/Baynes translation in source comments; those are working
+// notes, not ours to distribute, and comments survive into the build. The fix
+// lives in the canonical ../index.html — this is only the tripwire that catches
+// it coming back.
+const REFERENCE_MARKERS = [/\bclassical:/i, /Wilhelm/i, /Baynes/i];
+const leaked = REFERENCE_MARKERS.filter(re => re.test(html));
+
+if (leaked.length) {
+  console.log('\n  ⚠ reference material found in the bundle:');
+  leaked.forEach(re => console.log(`     ${re}`));
+  console.log('     Strip it from ../index.html before shipping.');
+  process.exitCode = 1;
+} else {
+  console.log('  ✓ no reference material in the bundle');
+}
+
 const remote = [...html.matchAll(/(?:src|href)\s*=\s*["']https?:\/\/[^"']+/gi)].map(m => m[0]);
 const cssRemote = [...html.matchAll(/url\(['"]?https?:\/\/[^)'"]+/gi)].map(m => m[0]);
 const runtimeRemote = [...remote, ...cssRemote];
