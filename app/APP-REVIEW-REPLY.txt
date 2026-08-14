@@ -1,0 +1,35 @@
+1. SCREEN RECORDING
+Attached. Recorded on a physical iPhone 16 running iOS 26.5. It begins at launch and shows the full flow: the daily lesson, consulting the oracle, a resolved reading, sharing a reading, the journal, the About screen, and the home screen widget. It also shows the app in airplane mode, as it is fully functional offline.
+The app has no account registration, login, or deletion; no paid content, purchases, or subscriptions; and no user-generated content that is shared or published. The only permission prompt is for notifications, shown in the recording. It appears only if the user enables the daily reminder, which is off by default.
+
+2. DEVICES AND OPERATING SYSTEMS TESTED
+- iPhone 16, iOS 26.5 (physical device)
+- iPhone 17 Pro Max, iOS 26 (Simulator)
+- iPhone 16, iOS 26 (Simulator)
+The app is iPhone-only. iPad and Vision Pro are not supported.
+
+3. FUNCTIONS AND TARGET AUDIENCE
+The Way is a 365-day contemplative practice app. It presents one lesson per day from A Course in Miracles, in sequence, and provides an I Ching oracle to consult when a question is unclear. Readings are saved to a private journal stored on the device.
+The audience is adults already engaged with contemplative practice. The problem it solves is continuity: these traditions ask for daily attention over a long period, and people lose their place. The app keeps the sequence, holds the record of what was consulted, and makes the day's material available without a book, a bookmark, or an internet connection.
+The app makes no health, medical, therapeutic, or wellness claims, and provides no advice, diagnosis, or treatment.
+
+4. SETUP AND ACCESS INSTRUCTIONS
+No setup, login, credentials, or sample files are required. The app is fully functional on install.
+- Daily lesson: shown on launch. "Continue" advances through it.
+- Oracle: choose to consult from the main screen. Six lines form one at a time, then the resolved hexagram and its reading are displayed.
+- Journal: readings save automatically and can be viewed or deleted. Private to the device, never transmitted.
+- Daily reminder: under About. Off by default. Enabling it requests notification permission and schedules a local notification at a chosen time.
+- Widget: long-press the home screen and search for "The Way."
+To reach any lesson directly, tap the lesson number at the top of the lesson screen and enter a number from 1 to 365.
+
+5. EXTERNAL SERVICES, TOOLS, AND PLATFORMS
+None. The app makes no network requests of any kind.
+All content, fonts, and code are contained in the app bundle. There is no backend, API, data provider, authentication service, payment processor, analytics, advertising SDK, crash reporting, or AI service. No user data is transmitted anywhere, which is why the privacy label is Data Not Collected. The app is built with Capacitor, an open-source native runtime. All state is stored locally on the device.
+
+6. REGIONAL DIFFERENCES
+None. The app behaves identically everywhere and contains no region-specific features, content, or restrictions. Distributed in the United States only. English only.
+
+7. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
+The app is not in a regulated industry. It makes no medical, health, financial, or legal claims and provides no regulated services.
+The daily lessons are drawn from the workbook of A Course in Miracles, which is in the public domain in the United States. Its copyright and trademarks were held invalid by the U.S. District Court for the Southern District of New York in Penguin Books U.S.A., Inc. v. New Christian Church of Full Endeavor, Ltd., No. 96 Civ. 4126 (S.D.N.Y.), on the grounds that the work had been distributed without copyright notice prior to publication. Judgment was entered in 2004. The text used in this app is from the first edition covered by that ruling.
+The I Ching is an ancient Chinese text in the public domain worldwide. All interpretive and commentary text is original work by the developer.
