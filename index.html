@@ -6040,6 +6040,19 @@ function buildReadingShareText(h1, chg, h2) {
   }
   return parts.join("\n");
 }
+// How many days each Workbook introduction governs. The Part II introduction
+// asks that each "What Is…" section "be reviewed each day, each one of them to
+// be continued till the next is given you" — so on the days after it begins,
+// the lesson keeps it within reach: one quiet line that opens it in place.
+function interludeSpan(t) {
+  if (/^What (Is|Am)/.test(t)) return 10;
+  if (/^Review (I|II|III|IV|V) —/.test(t)) return 10;
+  if (/^Introduction to Lessons 181/.test(t)) return 20;
+  if (/^Review VI/.test(t)) return 20;
+  if (/^Part II/.test(t)) return 145;
+  if (/^Final Lessons/.test(t)) return 5;
+  return 1;
+}
 function App() {
   const [phase, setPhase] = useState("enter");
   const [prevPh, setPrevPh] = useState("enter");
@@ -6087,6 +6100,7 @@ function App() {
   const [hexSearch, setHexSearch] = useState("");
   const [toast, setToast] = useState(null);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [openIl, setOpenIl] = useState({});
   const ref = useRef(null);
   const browseRef = useRef(null);
 
@@ -8021,12 +8035,13 @@ function App() {
       marginBottom: 24
     }
   }, getThemeForDay(ls.day).name), (() => {
-    const ilds = [...(ls.day === 1 ? [{
+    const starting = [...(ls.day === 1 ? [{
       title: "Introduction",
       text: WB_INTRO
     }] : []), ...WB_INTERLUDES.filter(x => x.before === ls.day)];
-    return ilds.map((it, i) => React.createElement("div", {
-      key: "il" + i,
+    const continuing = WB_INTERLUDES.filter(x => x.before < ls.day && ls.day < x.before + interludeSpan(x.title)).sort((x, y) => y.before - x.before);
+    const box = (it, key, onClose) => React.createElement("div", {
+      key: key,
       className: "rs",
       style: {
         maxWidth: 460,
@@ -8044,7 +8059,72 @@ function App() {
         textAlign: "left",
         marginBottom: tp.length < 60 ? 4 : 14
       }
-    }, tp))));
+    }, tp)), onClose && React.createElement("div", {
+      style: {
+        textAlign: "center",
+        marginTop: 8
+      }
+    }, React.createElement("button", {
+      onClick: onClose,
+      style: {
+        background: "none",
+        border: "none",
+        color: "rgba(196,149,106,.75)",
+        fontFamily: "'DM Sans',sans-serif",
+        fontSize: 12,
+        letterSpacing: 1.5,
+        cursor: "pointer",
+        padding: "10px 16px"
+      }
+    }, "Close")));
+    return React.createElement(React.Fragment, null, starting.map((it, i) => box(it, "il" + i)), continuing.length > 0 && React.createElement("div", {
+      style: {
+        maxWidth: 460,
+        margin: "0 auto 36px"
+      }
+    }, continuing.map(it => {
+      const k = ls.day + "|" + it.title;
+      const toggle = () => setOpenIl(o => ({
+        ...o,
+        [k]: !o[k]
+      }));
+      return openIl[k] ? box(it, k, toggle) : React.createElement("button", {
+        key: k,
+        onClick: toggle,
+        "aria-expanded": false,
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          gap: 16,
+          width: "100%",
+          background: "none",
+          border: "none",
+          borderTop: "1px solid rgba(196,149,106,.14)",
+          borderBottom: "1px solid rgba(196,149,106,.14)",
+          marginBottom: -1,
+          padding: "14px 4px",
+          cursor: "pointer",
+          textAlign: "left",
+          fontFamily: "'DM Sans',sans-serif"
+        }
+      }, React.createElement("span", {
+        style: {
+          fontSize: 11,
+          letterSpacing: 2,
+          textTransform: "uppercase",
+          color: "rgba(196,149,106,.75)"
+        }
+      }, it.title.replace(/\s+—\s+Introduction$/, " · Introduction")), React.createElement("span", {
+        style: {
+          fontFamily: "'Cormorant Garamond',serif",
+          fontStyle: "italic",
+          fontSize: 15,
+          color: "rgba(212,208,200,.6)",
+          whiteSpace: "nowrap"
+        }
+      }, "Read again"));
+    })));
   })(), React.createElement("h2", {
     style: {
       fontFamily: "'Cormorant Garamond',serif",
