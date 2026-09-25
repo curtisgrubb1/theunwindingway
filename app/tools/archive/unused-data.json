@@ -1,0 +1,616 @@
+{
+  "about": "Unused data and code removed from The Unwinding Way's index.html on 25 September 2026, kept here intact. Nothing in the app displayed or called any of it. 'sln' are the one-sentence line texts in the releasing voice (six per hexagram, bottom line first); 'readingRoot' is the classical source passage for each hexagram's reading; 'code' holds removed source verbatim.",
+  "sln": {
+    "1": [
+      "Numbness is not your truth. The dragon is underground, not gone.",
+      "Grief is holding onto what's gone. Let it fall away. See what's revealed.",
+      "Fear guards the illusion, not you. What you are has never been threatened.",
+      "Wanting — control, security, approval — all the same reaching. Open the hand.",
+      "Even righteous anger is resistance. Shine instead of burning.",
+      "The pride of arrival is the last veil. Let go of the one who understands."
+    ],
+    "2": [
+      "Something has gone cold. Acknowledge it. What's acknowledged can thaw.",
+      "Grief passes when you stop narrating it. Feel it. Let it move through.",
+      "The fear of invisibility is the fear of what's imagined. What you are doesn't need witnesses.",
+      "Wanting control, security, or approval — all the same lack. Everything you need is already inside.",
+      "The demand for a bigger experience is resistance in disguise. Truth is quiet.",
+      "The receptive form of separation is still separation. Release both the surrenderer and the achiever."
+    ],
+    "3": [
+      "The heaviness says nothing will change. That voice is not wisdom. Beneath it, something stirs.",
+      "Something is being mourned. Let go of the imagined hand. Take the real one.",
+      "Fear protects the illusion, not you. See through it and walk.",
+      "Release the need to manage, know, or be seen. The ground is where growing happens.",
+      "Frustration is wasted energy. Point it at what's actually here. Small steps.",
+      "Let go of the pride of handling this alone. Tears are a breakthrough."
+    ],
+    "4": [
+      "The heaviness isn't wisdom. It's collapse disguised as humility. Get up.",
+      "You're mourning the loss of certainty. The grief is real — the ache, the longing, the sense of something torn. Let it flow through.",
+      "Stop chasing what fills the gap. The emptiness IS the teaching.",
+      "Release the fantasy of what this should look like. Stay with what's real.",
+      "Don't waste the opening by being angry about how long it took.",
+      "You think you've graduated. That's the deepest folly. Be water, not the idea of water."
+    ],
+    "5": [
+      "The numbness isn't patience. Let go of the timeline.",
+      "You're grieving a feeling that left. The house remains. Release loyalty to the visitor.",
+      "You got ahead of yourself. Pull back to where it's real.",
+      "Wanting control, safety, approval — all the sound of refusing to sit still. Let the reaching go.",
+      "Resistance to rest is separation refusing help. Honor the pause.",
+      "Release the plan of what should arrive. Respect what actually comes."
+    ],
+    "6": [
+      "The heaviness wants to bury this. Put it down now, while it's small.",
+      "You lost the position of being right. Grieve it. Then move on.",
+      "Fear says run. Stay. The depth of this tension holds more truth than comfort.",
+      "Stop pushing for resolution. Sit in the fire. That's where the gold is.",
+      "Both sides of the conflict are the same energy wearing different masks.",
+      "You won. It's empty. Release the battlefield. Begin again humbly."
+    ],
+    "7": [
+      "Numbness pretending to be non-attachment. Get up. Set out.",
+      "The ache of sustained sincerity. You're not carrying it alone.",
+      "Too many voices. One instruction, one practice, one day.",
+      "Release the wanting of forward motion. Rest is power too.",
+      "Don't fight the disruption. Name it, contain it, continue.",
+      "The army was a tool. Don't worship it. Let go of the identity of discipline."
+    ],
+    "8": [
+      "Stop searching for the center. Let yourself settle. Where you land is where it is.",
+      "The old container served you. Release it with gratitude. Connection doesn't need a framework.",
+      "Holding to what's false is worse than standing alone with what's true.",
+      "Step fully inside. You can't hold together from the doorway.",
+      "Stop chasing what won't join. What's yours is already here.",
+      "Set down the pride of standing apart. Step in. With both feet."
+    ],
+    "9": [
+      "The numbness masks the pull toward truth. It can't stop it. Notice it.",
+      "Grieve the abandoned direction. Then arrive where the pull is taking you.",
+      "What broke was meant to break. What's unbreakable was never in the structure.",
+      "Release what you've added to sincerity. Presence without agenda is enough.",
+      "Your honesty naturally draws truth. That's not a burden. It's your nature.",
+      "The rain came. It's enough. Don't leverage completion into more accumulation."
+    ],
+    "10": [
+      "The heaviness of not-caring is the most dangerous weight. Walk simply. One honest step.",
+      "The path is smooth because you're alone on it. Let go of the need for a witness.",
+      "The tiger bites pretense. Be honestly limited and walk unharmed.",
+      "Wanting safe passage is the weight that makes the tiger turn. Release it.",
+      "Firm steps, not clenched fists. If conviction has heat in it, it's resistance.",
+      "If the path was truly honest, there's no one to credit. Just fading footprints."
+    ],
+    "11": [
+      "Even in peace, numbness can settle. Pull one reed. The rest follows.",
+      "Peace includes the unpeaceful parts. Bear with everything you are.",
+      "The fear of losing peace IS the loss. Return to this moment. It's still here.",
+      "Don't manage the peace. Don't perform the generosity. Let it flow through.",
+      "The suffering was very loud. The peace was always here underneath it.",
+      "The seasonal peace ends. The natural peace stays. Let the season go."
+    ],
+    "12": [
+      "Pull back from the surface. The roots are untouchable.",
+      "The grief of inactivity. Let it wash through until it runs out.",
+      "The pretense is visible now. That's the cure, not the problem.",
+      "The willingness to be still when everything says move — that's the highest trust.",
+      "It's ending. Don't resent that it happened. It taught you something.",
+      "Don't claim credit for enduring. The season turned on its own."
+    ],
+    "13": [
+      "The gate is open. Let the fortress of isolation fall.",
+      "Widen the circle. The grief of expansion is the heart growing.",
+      "Stop hiding weapons. Your imperfection is the connection.",
+      "The wall you're climbing is the wall you built. Stop climbing.",
+      "Tears first. Then laughter. The resistance to vulnerability is the loneliest thing you carry.",
+      "Surface fellowship isn't enough. Go deeper within the fellowship you have."
+    ],
+    "14": [
+      "Wake up enough to feel what nourishes and what drains.",
+      "The wagon is here now. Stop mourning the empty years. Fill it today.",
+      "Insight hoarded is theory. Insight shared is truth.",
+      "Stop chasing the periphery. Rest at the center.",
+      "If abundance requires explanation, it hasn't fully become yours yet.",
+      "You didn't create the abundance. You released what hid it. Be the channel."
+    ],
+    "15": [
+      "Apathy isn't modesty. Modesty crosses great waters. Give over, not up.",
+      "The performer is gone. Grieve them. What replaces them changes everything.",
+      "You exist without effort. Release the belief that labor keeps you real.",
+      "Less separation, less friction. Release the wanting. Everything is furthered.",
+      "Firmness without arrogance isn't sacrifice. Let the resentment go.",
+      "Act from modesty so complete you've forgotten the word."
+    ],
+    "16": [
+      "If you need to announce it, it's not deep enough yet. Sit with the silence.",
+      "Firm recognition, like a rock. Let the grief of lost years flow through it.",
+      "Stop looking for confirmation. The resonance that remains without a witness is real.",
+      "Don't manage the magnetism. Let truth move through you without a plan.",
+      "The chronic doubt hasn't gotten the message. Name it. See it. It stops being fatal.",
+      "Is the thunder still real, or are you dancing to memory? Ask honestly."
+    ],
+    "17": [
+      "The old standard is being replaced. The apathy is a defense against change. Step outside it.",
+      "You must choose between two goods. Release what needs releasing without guilt.",
+      "Following with one foot out is hedging. Commit fully for today.",
+      "Check the wanting beneath the following. Clean it. Then move.",
+      "Don't resist the simplicity. When everything aligns, follow with gratitude.",
+      "Let go of the pride of being captured by truth. The binding was always love."
+    ],
+    "18": [
+      "Inherited corruption ends with you. Open the closet. The air heals.",
+      "What decayed through softness is healed through a firmer tenderness.",
+      "The urgency is rough but the intention is right. Point it more carefully.",
+      "Tolerating decay is a choice. Stop avoiding.",
+      "Accept recognition without letting it feed the shame of having waited.",
+      "The highest goal includes the cleaning. Check the foundation always."
+    ],
+    "19": [
+      "The approach is shared. Let go of the belief that Being is private.",
+      "Not everything real comes through pain. Accept the favorable.",
+      "Comfort may mean resistance thinned, not avoidance. Drop the suspicion.",
+      "Receiving is open hands. Possessing is closed hands. Stay open.",
+      "Meet truth as an equal. Discernment, not dissolution.",
+      "True openness doesn't watch itself. Be the space where a person used to stand."
+    ],
+    "20": [
+      "You've looked before. You haven't seen. Drop the interpretation and look again.",
+      "The narrow crack of honest seeing beats a panoramic vista of projection.",
+      "The fear of self-knowledge IS the doorway to it. Go deeper.",
+      "Contemplation at the wider level has no personal agenda. Let go of the sharer.",
+      "The gap between seeing and living IS closing every time you see it.",
+      "Release the watcher. Pure seeing has no center, no self, no claim."
+    ],
+    "21": [
+      "The obstruction is small now. Bite through it before it grows.",
+      "You're deeper than you expected. The grief is rising — the heartbreak of what's being cut. Keep biting. What's on the other side is clear.",
+      "What you found is poison. Better out than in. The finding ends its power.",
+      "The arrowhead isn't your bone. Pull it out. Freedom is on the other side.",
+      "Gold inside the obstacle. The anger at the casing is the last resistance.",
+      "Pride refused to bite early. The correction is harder now. But still possible."
+    ],
+    "22": [
+      "Don't dismiss the basics. The simplest gesture done with care is graceful.",
+      "Your natural face, without costume, is more graceful than any adornment.",
+      "Release even the meaning of beauty. Let it be what it is.",
+      "The honest movement IS the grace. Stop choosing between forms.",
+      "A small, sincere offering beats a grand performance. Let the spectacle go.",
+      "Simplicity that knows it's simple is already complicated. Just be."
+    ],
+    "23": [
+      "The support is gone. What you truly are never needed it.",
+      "The framework is splitting. Grieve it. What it held is in you, not in it.",
+      "You can move through the destruction without being destroyed. You are what remains.",
+      "The comfortable and the false were the same thing. Release both.",
+      "What saves you is the gentle, overlooked part of yourself. Accept its help.",
+      "The fruit remains. You don't eat it. You BE it."
+    ],
+    "24": [
+      "You caught yourself early. That's the superpower. Let go of the self-criticism.",
+      "The quiet return, motivated by goodness alone. Let the tender ache be love.",
+      "You keep returning. That IS the connection. Stop demanding permanence.",
+      "Walking against the current alone. Others arrived quietly before you.",
+      "The practice remembered you. This is grace. Don't demand it continue.",
+      "You looked for a supernova and missed the candle. Next time, look at the bottom."
+    ],
+    "25": [
+      "The impulse is under the numbness. Remove the rock. The spring does the rest.",
+      "Release the expected outcome. The unexpected one is always better.",
+      "Deal with what happened. Let go of the injustice narrative.",
+      "What's truly yours can't be lost. Let the manager go.",
+      "Not everything needs fixing. Some pain just needs presence.",
+      "The pride of being motiveless IS the last motive. Sometimes the answer is nothing."
+    ],
+    "26": [
+      "Active restraint, not passive collapse. Stand at the dam.",
+      "The wheels are off. Grieve the momentum. Sit with what accumulates in stillness.",
+      "The extraordinary is what the ordinary becomes when it accumulates. Be the good horse.",
+      "Catch the wanting while the horns are still buds. Early awareness saves wrestling.",
+      "Anger tamed becomes clarity. The tusk remains. Its purpose changed.",
+      "The highway opens. You were the dam, not the water. Let the pride go."
+    ],
+    "27": [
+      "Stop looking at others' plates. Your tortoise is right here.",
+      "Grieve the wasted years. Then direct all attention to what nourishes now.",
+      "You've been eating without tasting. Slow down. One meal, fully tasted.",
+      "The tiger becomes the infant. Drop the performance of hunger. Just be fed.",
+      "The gap between old food and new food is the fast. Endure it. Taste is sharpening.",
+      "You're the channel, not the source. The moment you forget, the nourishment curdles."
+    ],
+    "28": [
+      "Notice the pressure without collapsing under it. The care matters now more than ever.",
+      "What's dead at the top is alive at the root. The excess was in the height.",
+      "Taking something off the beam isn't loss. It's survival. Release now.",
+      "Support arrived. Check if it's genuine. Accept it without managing it.",
+      "The old is flowering goodbye. Release the anger at the timing. Let it be beautiful.",
+      "You're underwater. Come up. There's no shame in breathing."
+    ],
+    "29": [
+      "The bottom is where direction changes. Feel for the movement. It's there.",
+      "One sincere breath in the dark beats a thousand insights in the light.",
+      "You are not the fear. You are what watches it. Rest in the watching.",
+      "Take the jug. Take the bowl. Simple sustenance. Not rescue. Enough.",
+      "The water rises through sincerity, not anger. Be sincere. The rim approaches.",
+      "The binding ends when the pride ends. Not before."
+    ],
+    "30": [
+      "The fire catches slowly. One step, then clarity. Let it catch.",
+      "Yellow light. The balanced center. You've arrived. Rest in it.",
+      "The setting sun is still brilliant. Be present now. Sing.",
+      "The insight came and went. Release the jar. Another will come.",
+      "The tears are not failure. They're clarity's highest achievement.",
+      "Act from clarity, not pride. The seeing IS the fuel."
+    ],
+    "31": [
+      "The faintest vibration at the edges is real. Don't dismiss it.",
+      "The pull is real. Wait for the heart to catch up to the calves.",
+      "Not every attraction serves truth. Feel into it. Then choose.",
+      "True influence is resonance, not contract. Let it come and go.",
+      "Let the influence reach the back of your neck. The resistance costs more than the vulnerability.",
+      "Let the influence reach the body before it reaches the mouth."
+    ],
+    "32": [
+      "Duration grows through the roots while you walk. Stop digging to check.",
+      "Remorse is releasing. The gap it leaves is the clean ground of duration.",
+      "Stop changing every week. Stay with one honest approach. That's roots.",
+      "Stop hunting for what endures. It catches you when you stop running.",
+      "Flexible endurance, not rigid. Keep the core. Bend with the wind.",
+      "Restlessness is not growth. Duration is the stillness that persists through all movement."
+    ],
+    "33": [
+      "You waited too long. Don't advance. Hold still.",
+      "The grief of leaving is real. The yellow cow holds. Let it hold.",
+      "You're stuck. Be honestly stuck. Meet the obligation. Then go.",
+      "Voluntary retreat is the strongest kind. Choose truth over engagement.",
+      "Retreat gracefully. Don't burn the bridge.",
+      "Cheerful retreat is just going home. Don't make it a philosophy."
+    ],
+    "34": [
+      "The numbness sits on the power. Release the cap. The power was always here.",
+      "The power isn't new. Your awareness of it is. Let go of the accounting of lost years.",
+      "The ram gets stuck in the hedge because the hedge wasn't the obstacle. Let go of the target.",
+      "The hedge opened because it was ready. Your persistence helped. Don't claim the wagon.",
+      "What got you here won't get you there. Release the push. Allow the flow.",
+      "You're stuck in the hedge. Back out. Humiliation is worth more than stuck pride."
+    ],
+    "35": [
+      "The rebuff is friction. Evidence you're moving. Trust the advance.",
+      "The light shows what the dark hid. Grieve the comfortable darkness. Keep rising.",
+      "The universe confirms genuine progress quietly. Let go of the fear of being wrong.",
+      "Stop hoarding. The sun doesn't rush. It rises. Share the light.",
+      "Deserving has nothing to do with it. The sun rises because it's the sun.",
+      "Clarity doesn't need horns. It shines. What's false dissolves in the shining."
+    ],
+    "36": [
+      "Wings lowered. Still flying. That matters more than altitude.",
+      "The clarity is wounded, not killed. Accept the horse. Keep going.",
+      "The great leader is captured. The light itself cannot be. Wait for the turning.",
+      "You're in the belly of darkness. The heart of it is where the light hides.",
+      "Conceal the light to protect it. The highest devotion sometimes looks like nothing.",
+      "The light became the darkness. Return to honest not-knowing. Begin again."
+    ],
+    "37": [
+      "Set one clear intention. Enforce it with warm firmness.",
+      "The inner life isn't glamorous. Grieve the exciting. Feed the family.",
+      "Too much severity, not enough warmth. Relight the hearth with tenderness.",
+      "The treasure is presence, not acquisition. Let go of the grasping.",
+      "You are the only one who can tend this fire. Sit on the throne with love.",
+      "The household ordered for truth is warm and alive. Let the architecture go."
+    ],
+    "38": [
+      "Let the horse go. It returns on its own. Stop chasing.",
+      "The truth was in the alley you'd been avoiding. Let go of the expectation.",
+      "The opposition isn't proof you're wrong. It's the whole picture, not yet seen.",
+      "The isolation introduces you to yourself. Stop wanting agreement.",
+      "The opposition existed to prevent premature resolution. Thank it.",
+      "What looked like devils was companions in disguise. Stop fighting. Look again."
+    ],
+    "39": [
+      "Patience and apathy look the same from outside. The difference is inside.",
+      "Each obstruction is 'not this way.' The showing up IS the duty.",
+      "The return isn't failure. It's information. Come home.",
+      "The path forward is through connection. Stop refusing to receive.",
+      "Help that arrives in the worst moment is the real help. Receive it.",
+      "The great person who resolves the obstruction was inside you the whole time."
+    ],
+    "40": [
+      "The quiet release is the deepest. Something shifted. Breathe the different air.",
+      "Three small deceptions, found by honest looking. The field is clear.",
+      "Put the burden down. The carriage was always there.",
+      "Release the big toe. The specific, local, real contraction. Not the grand narrative.",
+      "Genuine release is the end of trying to release. Let it work at you.",
+      "The hawk was always going to fall. Let go of the pride of the archer."
+    ],
+    "41": [
+      "Don't narrate the loss. Move on. One fewer thing to carry.",
+      "Real decrease is modest, not dramatic. Keep your center. Give your excess.",
+      "Release the extra companion. What's essential arrives when excess goes.",
+      "Faults are excess. Release them quickly. Self-acceptance isn't an excuse.",
+      "Sincere decrease attracts increase. Stop opposing what truth wants to give.",
+      "What grows from genuine decrease needs a clean house. Maintain the simplicity."
+    ],
+    "42": [
+      "The resources are here. Do the difficult thing you've been postponing.",
+      "The blessing is the harvest of years you thought were fruitless. Stop checking. Receive.",
+      "The gift is legitimate even though it came through pain.",
+      "Use the increase for the center, not the decorations. Relocate the foundation.",
+      "The sun doesn't check credentials. Let the benefit flow to everyone.",
+      "What's hoarded rots. What flows, nourishes. Let the barn go."
+    ],
+    "43": [
+      "Check: mighty toes AND body mobilized? If not, one more day.",
+      "The alarm is the sound of what's ending. Don't fear it. Let it fall.",
+      "Force isn't what dissolves the last illusion. Seeing is. Walk in the rain.",
+      "Let yourself be led like a sheep. You've never been on the other side.",
+      "Weeds regrow. Persistent seeing dries the root. Firm, not violent.",
+      "The pride of 'I did it' was the last illusion. It broke through itself."
+    ],
+    "44": [
+      "The inferior enters through indifference. The brake of bronze is your attention. Care.",
+      "The fish is in the kitchen. Handle it now before it reaches the guests.",
+      "You're exposed. Walking without pretense is uncomfortable but not fatal.",
+      "You missed it. What wasn't contained in the kitchen must be addressed in the world.",
+      "Don't fight the returning darkness. Wrap it in willow leaves. Contain with gentleness.",
+      "The horns can't gore the wind. Release the impressive response. Watch honestly."
+    ],
+    "45": [
+      "The gathering is chaotic. One sincere cry transforms it.",
+      "Coming to center means losing the freedom of confusion. A small offering is enough.",
+      "You're arriving late. The center held your place.",
+      "The good fortune is real but not personal. Stop possessing.",
+      "Doubters come when the center proves itself through endurance. Not words.",
+      "The tears are homecoming. The parts were always one."
+    ],
+    "46": [
+      "The seed doesn't doubt itself. Don't obstruct the confidence the growth already has.",
+      "Your offering is thin and imperfect. That's enough. Sincerity is enough.",
+      "The empty city isn't a trap. Don't manufacture obstacles.",
+      "The position is not yours to own. Serve from it.",
+      "Steps, not rockets. Thank the slow pace. It gives structural integrity.",
+      "The growth that continues when no one watches — that's real growth."
+    ],
+    "47": [
+      "Even apathy gets tired of being apathetic. Wait for that tiredness.",
+      "Take one bite. Capacity returns through the act of receiving.",
+      "The comfort is there. The fear narrowed your vision. Widen it.",
+      "The golden carriage is irrelevant. The oppression is the teaching.",
+      "What oppresses and what liberates are the same force. Let go of the one who was oppressed.",
+      "The vines are yours. Cut one. The rest become easier."
+    ],
+    "48": [
+      "The mud is not the well. Acknowledge it. Begin to clear it.",
+      "The jug leaks. Mend it. The water is still there.",
+      "The well is ready. You are ready. Drink. It was always for you.",
+      "Maintenance is not glamorous. It's essential. Line the well.",
+      "Cold, clear water. Right now. Stop reviewing the drought. Drink.",
+      "The well excludes no one. Including you. Especially you."
+    ],
+    "49": [
+      "The wrapping is temporary. Stay awake inside it.",
+      "Grieve and burn simultaneously. Both are honest.",
+      "Three times around the question is enough. Decide.",
+      "The revolution succeeded through truth. Wanting corrupts it into a coup.",
+      "The tiger doesn't explain its stripes. Stop resisting visibility.",
+      "The revolution is done. Don't use it as a lifestyle. Live by the new calendar."
+    ],
+    "50": [
+      "Flip the cauldron. Shake out the old. Cook in a clean vessel.",
+      "The food is honestly yours. Eat first. Then share.",
+      "The old grip doesn't work. The new one will feel natural soon.",
+      "The vessel broke under the weight. Repair it. Assess its real capacity.",
+      "The handles are yellow, the rings are gold. You don't have to carry this alone.",
+      "Jade rings. The vessel was always here. You just cleared it and tended the fire."
+    ],
+    "51": [
+      "The numbness shatters. Inside the shell: laughter.",
+      "Something's lost. Don't chase it. Climb. In seven days it returns.",
+      "Move. Any direction. The paralysis is separation playing dead.",
+      "The shock sank into mud. Come to the surface. Feel it now.",
+      "Nothing real is lost in the shaking. What stays was always fixed.",
+      "Close the terrified eyes. Open them. What's actually here survived."
+    ],
+    "52": [
+      "Dead stillness is apathy. Alive stillness is meditation. Choose.",
+      "The mountain watches the clouds. What you love will circle back.",
+      "If you're holding your breath, the stillness became a cage. Breathe.",
+      "When the body is genuinely still, wanting has nowhere to live.",
+      "Speak only from the still jaw. Those words need no repetition.",
+      "Release the one who is still. The stillness radiates without a source."
+    ],
+    "53": [
+      "Start at the shore. Depth comes through showing up.",
+      "Quiet competence, not fireworks. This is what real progress looks like.",
+      "A complication, not a failure. Protect what matters.",
+      "The flat branch holds. If your practice works, the form doesn't matter.",
+      "Three years of seeming fruitlessness. The fruit was always coming.",
+      "The feathers are the offering. Let go of the personal arrival."
+    ],
+    "54": [
+      "Secondary position is not lesser. You're here. You're walking.",
+      "One eye is enough. Move with what you see.",
+      "Accept the humble version. It's more honest than the grand one.",
+      "Not ready yet. That's wisdom, not failure.",
+      "The moon just before full is the most beautiful. Stay in the almost.",
+      "The gesture is hollow. Admit it. That honesty invites new life."
+    ],
+    "55": [
+      "This IS different. Immerse yourself. The conditions are at maximum.",
+      "The light is strong enough to penetrate any veil. Trust it.",
+      "The broken arm forces the other hand. What's impaired reveals what's hidden.",
+      "What you find in the darkness of the peak is the most real.",
+      "Accept the blessing without corrupting the practice. Grace is a side effect.",
+      "Open the gate. Abundance sealed becomes a prison."
+    ],
+    "56": [
+      "Stop wasting energy on the trivial. Look up.",
+      "The inn is temporary. Your faithfulness to the practice is what you carry.",
+      "The inn burned. Keep moving. The next one appears.",
+      "You have what you need but you're not happy. Walk anyway.",
+      "You missed the target. The aiming was the point.",
+      "Familiarity breeds carelessness. Build again. More carefully."
+    ],
+    "57": [
+      "Any movement done with perseverance is the gentle penetrating.",
+      "The deepest work happens where you can't watch. Let go of the control.",
+      "You're perseverating, not penetrating. Move through.",
+      "When wanting quiets, precision arrives. Three clean catches.",
+      "Three days before, three days after. The change is gentle.",
+      "You went too deep. Pull back. The gentle knows when to stop."
+    ],
+    "58": [
+      "Quiet happiness. No audience needed. Stay here.",
+      "Choose sincere joy over familiar distraction.",
+      "Generate joy internally. Don't depend on what arrives from outside.",
+      "You know the difference between cheap and real. Trust the knowing.",
+      "Some doubts are just the sense of separation trying to steal the gladness. Dismiss them.",
+      "The seduction is real. The fulfillment is not. Be glad without reason."
+    ],
+    "59": [
+      "The horse is strong. Use the energy while it's here.",
+      "Reach for what supports you. The instinct is not weakness.",
+      "The self dissolves. What's underneath is everything without a name.",
+      "The bonds dissolve. What the flood reveals was always the landscape.",
+      "The proclamation dissolves. Truth never needed one.",
+      "What dissolves at the blood level dissolves completely. Don't pick it back up."
+    ],
+    "60": [
+      "Stay put. Even for the wrong reason, it's the right action.",
+      "The courtyard taught everything it has. Go out.",
+      "The absence of limits costs more than limits. Set one.",
+      "When the limit fits, wanting has nothing to say.",
+      "The sweetness IS the constraint. Beauty lives in form.",
+      "Too tight. The most disciplined thing is relaxing the discipline."
+    ],
+    "61": [
+      "Check for hidden agendas. Even spiritual ones.",
+      "A sincere voice calls. Something in you answers. Share the goblet.",
+      "The emotional swings mean you've touched something real. Let them move.",
+      "Almost fully sincere. The last gap closes through patience, not wanting.",
+      "Your sincerity connects what seemed separate. That's truth's doing, not yours.",
+      "Stop crowing. Close the mouth. Open the heart."
+    ],
+    "62": [
+      "You overshot. Come back down. What you need is below you.",
+      "The middle is where real work lives. Let go of the top.",
+      "The danger is in the details you skipped. Go back.",
+      "You're in the right place. Don't advance. This is enough.",
+      "Trust your aim even when the target is invisible.",
+      "You flew past it. Next time, fly lower."
+    ],
+    "63": [
+      "The transition from completion is never clean. The wheels drag.",
+      "Something falls away from the perfect. Don't chase it. It returns.",
+      "Defend the new order. Sustained effort, not one battle.",
+      "Even the finest understanding wears out. Stay attentive.",
+      "A small sincere gesture beats the grand celebration.",
+      "You went past the finish. Come back. The next journey isn't yet."
+    ],
+    "64": [
+      "False start. Dry off. Try again. No shame in beginning again.",
+      "Moving slowly is the right pace. Drag the wheels.",
+      "Don't force the last step. Float. Let the current carry you.",
+      "Three years of sustained effort. The reward is real and lasting.",
+      "Your light is genuine. No one can extinguish it. Trust the ease.",
+      "Celebrate, but stay clear-headed. The crossing is not quite finished. It never is."
+    ]
+  },
+  "readingRoot": {
+    "1": "Pure creative force — six unbroken lines of yang. The power that begins everything, whole and unobstructed before thought divides it.",
+    "2": "Pure receptivity — six broken lines of yin. The power of yielding and allowing, giving form to what the creative begins.",
+    "3": "Thunder under water — a seed pushing up through hard ground. Something real is being born, and birth is chaotic. The difficulty is the beginning, not an obstacle to it.",
+    "4": "A spring at the foot of the mountain — fresh water not yet knowing its course. The beginner's mind. The only real folly is pretending you already know.",
+    "5": "Clouds gathered over heaven — the rain hasn't fallen yet. Waiting nourished by inner certainty, not anxious effort. What is ready to come will come.",
+    "6": "Heaven and water moving in opposite directions — the friction of inner conflict. Not you against the world, but what's real against what you believe you are.",
+    "7": "Water hidden beneath the earth — vast reserves under a calm surface. Disciplined inner strength: sincerity organized around a single center.",
+    "8": "Water over the earth, flowing to the lowest point and gathering. Union — not gathering things to yourself, but settling around a true center until only what's central remains.",
+    "9": "Wind over heaven — the gentlest force nudging the strongest. Small, patient restraint; change too gradual to see in the moment, undeniable over time. The clouds gather; the rain will come.",
+    "10": "Heaven above the lake — treading on the tiger's tail. Careful conduct: how you actually walk, with the weight of self-importance released, is what keeps the tiger from turning.",
+    "11": "Earth above heaven — the receptive descends, the creative rises, and they meet. Heaven and earth in union: the natural harmony present when separation goes quiet. Springtime.",
+    "12": "Heaven and earth moving apart — no communication between them. Stagnation: the season when things withdraw and go quiet. What's alive is protected underground, not dead.",
+    "13": "Heaven with fire — clarity rising and including everything in its light. Fellowship: the natural recognition among beings who've released enough separation to see the same fire in each other.",
+    "14": "Fire above heaven — light at its highest point, illuminating everything. Great possession: the abundance revealed when the sense of lack is seen through. You were never lacking.",
+    "15": "A mountain hidden inside the earth — something vast that needs no display. Modesty: the one quality the I Ching calls without danger, because it has nothing to protect.",
+    "16": "Thunder rising from the earth — energy built underground breaking through. Enthusiasm: not excitement but deep devotion, truth and Being recognizing each other until the earth shakes.",
+    "17": "Lake above thunder — joy responding to movement. Following: moving with something wiser than separation, releasing your grip on where it's going, and finding the going itself is home.",
+    "18": "Wind at the foot of the mountain — what's been quietly festering beneath still daily life. Work on the decayed: repairing a corruption built from small neglects, undone by honest light.",
+    "19": "Earth above the lake — two strong lines entering from below, growing upward. Approach: something real drawing near the way spring approaches winter — gradual, inevitable, warm.",
+    "20": "Wind over the earth, touching everything and holding nothing. Contemplation: the seeing that begins when interpretation stops — intimate contact without possession.",
+    "21": "Thunder and lightning together — shock and clarity at once. Biting through: removing an obstruction between you and the true with precision, not violence.",
+    "22": "Fire at the foot of the mountain, light on stillness. Grace: the natural beauty that appears when form perfectly expresses content and only the real remains — not added, uncovered.",
+    "23": "The mountain resting on the earth, its base eroded — five yin lines dissolving beneath one yang line at the top. Splitting apart: the false collapsing layer by layer, leaving only what was always true.",
+    "24": "One yang line entering at the bottom of five yin — a single candle in a dark room. Return: the first faint light after darkness, the noticing that the light was here all along.",
+    "25": "Heaven over thunder — energy moving spontaneously before the mind gets involved, the way a child reaches. Innocence: unconditioned Being expressing itself without calculation.",
+    "26": "Mountain above heaven — great creative force held in stillness, accumulating like water behind a dam. Great taming: holding immense power still so its eventual release matches its restraint.",
+    "27": "A solid line top and bottom, four yielding lines between — the open jaws of the mouth. Nourishment: everything you take in and everything you express. What you consume is what you become.",
+    "28": "Lake risen over the trees — water past its normal bounds, the ridgepole sagging under too much load. Great excess: what cannot be sustained must be released back to the simple and essential.",
+    "29": "Water doubled — danger upon danger, an abyss directly in the path with no way around, only through. The Abysmal: keep sincerity in the depths and flow through, as water does.",
+    "30": "Fire upon fire — clarity doubled. Fire clings to what it burns; it can't exist alone. The Clinging: illumination through devotion, where what's brought into the fire becomes the fire.",
+    "31": "Lake resting on the mountain — openness upon stillness. Influence: the natural, mutual attraction that happens when two things meant to resonate find each other, like tuning forks.",
+    "32": "Thunder above wind — arousal above the gentle, the pairing that endures because it's alive, not rigid. Duration: what persists through change, the quality of what is true.",
+    "33": "Heaven withdrawing behind the mountain — the creative pulling back behind stillness. Retreat: not defeat but the sophisticated strength that knows when to disengage. Organized, intentional withdrawal.",
+    "34": "Thunder above heaven — the force of awakening magnified by the creative. Great power: real force whose danger is not in having it but in using it without alignment to what's right.",
+    "35": "Fire above earth — the sun rising over the land. Progress: not a sudden flash but the gradual, inevitable increase of dawn. Advancement through alignment, not effort.",
+    "36": "Earth above fire — the sun sunk beneath the earth, light hidden inside the dark. Darkening of the light: clarity going underground to be protected when conditions are hostile, not extinguished.",
+    "37": "Wind rising from fire — what burns inside moves outward as influence. The Family: the household of your inner life; when its parts are aligned and warm, everything outer aligns too.",
+    "38": "Fire rising, water sinking — two natural movements that can never meet. Opposition: not conflict to be won but contradiction to be seen. Two truths held at once, teaching what neither could alone.",
+    "39": "Water on the mountain — danger on the heights, the path ahead blocked by something real. Obstruction: not punishment but information, showing where the current approach isn't working.",
+    "40": "Thunder and rain — the storm that clears the air. Deliverance: the tension breaking, the knot loosening; not the work finished, but what blocked it freed. Live in the clear air.",
+    "41": "Mountain above lake — the lake diminishes to nourish the mountain; the lower gives to the higher. Decrease: sacred subtraction, where each thing removed reveals the simple fact of Being underneath.",
+    "42": "Wind above thunder — the upper gives to the lower. Increase: not accumulation but flow; what's understood nourishing what's still being learned, meant to move through rather than be stored.",
+    "43": "Five yang lines pressing against one yin at the top — overwhelming truth against one last illusion, the lake risen to the sky. Breakthrough: not force, but accumulated sincerity overflowing to wash the final obstruction away.",
+    "44": "One yin line entering beneath five yang — the wind under heaven, something that moves everywhere and can't be stopped by force. Coming to meet: the return of a contraction that slipped back in after the breakthrough.",
+    "45": "Lake above earth — water gathering in the lowest place. Gathering together: the scattered parts of you collecting around the center that was always here, finding what they were looking for.",
+    "46": "Earth above wind — wood growing within the earth, pressing upward through darkness toward the light. Pushing upward: not a dramatic breakthrough but the slow, irresistible growth of what was planted in sincerity.",
+    "47": "Lake over water, but the water has drained below reach — the vessel intact, the source gone under. Oppression: internal exhaustion, the depletion of what nourishes. The great person endures without pretending there's water.",
+    "48": "Water drawn up through wood — the deep source, available to everyone with a vessel. The Well: the unchanging source that never runs dry. The question isn't whether it exists, but whether your rope reaches the water.",
+    "49": "Fire within the lake — irreconcilable forces in the same space, where what should extinguish instead transforms. Revolution: the old way of seeing and the new can't coexist; one must go, and the calendar resets.",
+    "50": "Fire above wind — the fuel feeds the flame, the flame transforms the offering. The Cauldron: you are the sacred vessel, truth the fire beneath, and honest attention the raw material being cooked into nourishment.",
+    "51": "Thunder doubled — shock upon shock. The Arousing: truth piercing everything at once. What seems like destruction turns out to be revelation, and the response is laughter. Hold to sincerity; let all else shake.",
+    "52": "Mountain upon mountain — stillness so complete it sees without a seer. Keeping Still: not the absence of the world, but the absence of the one who needs the world to mean something. Presence revealed when trying stops.",
+    "53": "Wind above mountain — a tree growing on the heights, every ring earned through a full season. Development: gradual progress that can't be rushed, visible and dignified, impressiveness as a side effect of honest growth.",
+    "54": "Thunder above the lake — movement driven by joy, entering a structure you didn't build on terms not your own. The Marrying Maiden: participating humbly in an arrangement that doesn't need your renovation.",
+    "55": "Thunder and fire together — movement and clarity at maximum, the sun at high noon. Abundance: a fullness to be lived completely in its moment, not preserved, knowing the only way from the peak is down.",
+    "56": "Fire above the mountain — the fire passes over, illuminates a moment, then moves on. The Wanderer: passing through, seeing more than the resident because the eyes stay fresh. Travel light; every place is a waypoint, not home.",
+    "57": "Wind following wind — a continuous, gentle, unrelenting presence entering everything through every crack. The Gentle: penetration that isn't an event but a condition; what enters gently reaches everywhere, because everywhere has cracks.",
+    "58": "Lake upon lake — openness resting on openness, depth reflecting depth. The Joyous: the quiet, deep gladness that rises when the burden of making everything mean something is set down. The joy was always here.",
+    "59": "Wind over water — like warm wind over ice. Dispersion: what has been rigid dissolving, not attacked but warmed until it can no longer hold its shape. Underneath the rigidity is your own nature, flowing again.",
+    "60": "Water above the lake — the water rises only so high, the boundary that makes a lake a lake instead of a flood. Limitation: not restricting truth but giving it form, the shape of the cup through which the infinite becomes drinkable.",
+    "61": "Wind over the lake — resonance. When something true is present, everything that shares that truth vibrates in response. Inner Truth: firm on the outside, open in the middle; sincerity that reaches even what seems unreachable.",
+    "62": "Thunder above the mountain — overwhelming energy in a small frame. Small Exceeding: the small bird flying low, restraint directing excess into precision rather than grandeur. Truth hides in the footnote, not the headline.",
+    "63": "Water above fire — every line in its correct position. After Completion: for one rare moment everything is exactly where it belongs, and that is also the moment disorder begins its return. Enjoy perfection without clinging to it.",
+    "64": "Fire above water — every line in the wrong position, and yet the hexagram that ends the I Ching. Before Completion: the young fox almost across the ice, the crossing never quite finished because every far shore begins the next crossing."
+  },
+  "themeBridges": {
+    "undoing_meaning": "The oracle speaks to someone releasing the meanings they have given the world. The inner posture is emptying, surrendering interpretations, encountering the open space that remains.",
+    "recognizing_projection": "The oracle speaks to someone beginning to see they are the source of what they perceive. The inner posture is taking responsibility without guilt.",
+    "choosing_differently": "The oracle speaks to someone turning from the old way of seeing toward a new one. The inner posture is willingness — not yet understanding, but willing.",
+    "divine_connection": "The oracle speaks to someone discovering that the divine is not distant but intimate. The inner posture is trust.",
+    "review_1": "The oracle speaks to someone consolidating what they have learned. The inner posture is patient review — letting old lessons reveal new depths.",
+    "light_and_forgiveness": "The oracle speaks to someone discovering their function: to forgive and to shine. The inner posture is releasing grievances and accepting the role of light-bearer.",
+    "review_2": "The oracle speaks to someone deepening their understanding of forgiveness and light.",
+    "identity_in_god": "The oracle speaks to someone recognizing their true identity beyond body and personality. The inner posture is remembering what was always true.",
+    "review_3": "The oracle speaks to someone stabilizing their recognition of their true Self.",
+    "forgiveness_deepens": "The oracle speaks to someone going deeper into forgiveness — past the surface into where it meets the body, sickness, the deepest defenses. The inner posture is radical honesty.",
+    "review_4": "The oracle speaks to someone integrating the deeper dimensions of forgiveness.",
+    "holy_presence": "The oracle speaks to someone walking differently in the world — with sacred presence, guided, entrusted with something holy. The inner posture is surrender to guidance.",
+    "review_5": "The oracle speaks to someone deepening their walk with the divine.",
+    "trust_and_freedom": "The oracle speaks to someone releasing the last barriers — body identification, the need to control, the fear of trusting. The inner posture is freedom through release.",
+    "review_6": "The oracle speaks to someone consolidating trust and freedom.",
+    "prayer_and_surrender": "The oracle speaks to someone in direct conversation with the divine — no longer studying about God but speaking to God. The inner posture is intimate and quiet.",
+    "truth_and_identity": "The oracle speaks to someone whose identity is shifting from the personal to the universal. The inner posture is vast stillness — seeing with Christ's eyes.",
+    "awakening": "The oracle speaks to someone waking up in the present moment. The past is gone. The future is irrelevant. Only this instant is real.",
+    "completion": "The oracle speaks to someone completing the circle — recognizing they were always home. The inner posture is joyful certainty, tempered by humility.",
+    "final": "The oracle speaks to someone who has handed everything over. Nothing left to do, learn, or seek. The inner posture is total availability."
+  },
+  "code": {
+    "TRIGRAMS": "const TRIGRAMS = {\n  heaven: { name:\"Heaven\", ch:\"Qián\", sym:\"☰\", nature:\"The Creative\", el:\"Heaven / Metal\", q:\"Strong, initiating, expansive\",\n    energy:\"Pure yang energy — the force that begins all things. The impulse of creation itself. In you, this is your capacity to initiate, to will, to set things in motion.\",\n    simple:\"The creative force. The spark that starts everything. Your power to begin.\",\n    body:\"The head, the mind\", img:\"The sky, vast and unobstructed\" },\n  earth: { name:\"Earth\", ch:\"Kūn\", sym:\"☷\", nature:\"The Receptive\", el:\"Earth\", q:\"Yielding, nurturing, devoted\",\n    energy:\"Pure yin energy — the force that receives and gives form. Without the receptive, the creative has nowhere to land. In you, this is your capacity to accept, to listen, to let reality shape you.\",\n    simple:\"The receptive force. Your power to accept and allow.\",\n    body:\"The belly, the body\", img:\"The earth, vast and supportive\" },\n  water: { name:\"Water\", ch:\"Kǎn\", sym:\"☵\", nature:\"The Abysmal\", el:\"Water\", q:\"Dangerous, deep, flowing\",\n    energy:\"Yang trapped within yin — light hidden in darkness. Water always finds its way by persistence. In you, this is your deepest truth moving through fear, sincerity that cannot be extinguished.\",\n    simple:\"Deep water. Your truth is still there even when you can't see it. Trust the flow.\",\n    body:\"The kidneys, the ears\", img:\"Water flowing into the abyss, finding its level\" },\n  fire: { name:\"Fire\", ch:\"Lí\", sym:\"☲\", nature:\"The Clinging\", el:\"Fire\", q:\"Bright, illuminating, dependent\",\n    energy:\"Yin held between yang — light that depends on what it clings to. Fire needs fuel. In you, this is awareness itself — consciousness that illuminates but must attach to something. See what you are clinging to.\",\n    simple:\"Clarity. Fire needs something to burn — what is your attention attached to?\",\n    body:\"The eyes, the heart\", img:\"Fire clinging to wood, giving light\" },\n  thunder: { name:\"Thunder\", ch:\"Zhèn\", sym:\"☳\", nature:\"The Arousing\", el:\"Wood / Thunder\", q:\"Shocking, awakening\",\n    energy:\"Yang emerging beneath yin — the first movement, the seed cracking open. Thunder shakes you awake. In you, this is the shock of insight, the sudden recognition.\",\n    simple:\"A wake-up call. Sudden clarity. The moment understanding breaks through.\",\n    body:\"The feet, the voice\", img:\"Thunder from the earth, new life stirring\" },\n  mountain: { name:\"Mountain\", ch:\"Gèn\", sym:\"☶\", nature:\"Keeping Still\", el:\"Earth / Mountain\", q:\"Still, immovable, meditative\",\n    energy:\"Yang resting atop yin — stillness achieved. The mountain does not try to be still; it simply is. In you, this is the capacity for meditation, for resting in awareness itself.\",\n    simple:\"Stillness. The mountain just is. Your capacity to stop and simply be aware.\",\n    body:\"The hands, the spine\", img:\"The mountain, unmoved\" },\n  wind: { name:\"Wind\", ch:\"Xùn\", sym:\"☴\", nature:\"The Gentle\", el:\"Wood / Wind\", q:\"Penetrating, gradual, pervasive\",\n    energy:\"Yin beneath yang — gentleness that penetrates everywhere. Not forceful, yet nothing can keep it out. In you, this is the power of gentle persistence, understanding that permeates when you stop forcing.\",\n    simple:\"Gentle influence that reaches everywhere without force. Understanding that seeps in slowly.\",\n    body:\"The breath, the nerves\", img:\"Wind through trees, bending but not breaking\" },\n  lake: { name:\"Lake\", ch:\"Duì\", sym:\"☱\", nature:\"The Joyous\", el:\"Metal / Lake\", q:\"Joyful, open, expressive\",\n    energy:\"Yin resting atop yang — openness above strength. The lake receives rain, reflects sky, evaporates freely. In you, this is joy, communication, openness that comes from firm ground beneath.\",\n    simple:\"Joy and openness. Your natural happiness when you stop guarding yourself.\",\n    body:\"The mouth, the lungs\", img:\"The lake, still and reflective, open to sky\" },\n};\n",
+    "LT": "const LT = [\n  { nm:\"First\", pos:\"The Earth\", dom:\"Your foundation — the body, the material world.\",\n    y:\"Active at the root. Something wants to begin but the time may not be right. Patience is strength.\",\n    n:\"Stillness at the foundation. The ground is waiting. Do not force a beginning.\",\n    sy:\"Energy stirring at the base. Not yet time — just notice.\", sn:\"Be still. Wait.\" },\n  { nm:\"Second\", pos:\"The Interior\", dom:\"Your inner self — emotions, relationships.\",\n    y:\"Clear inner conviction. Strong at the center, not yet visible, but unshakeable.\",\n    n:\"Deep receptivity within. Open to being moved, changed, taught.\",\n    sy:\"You know what you feel. Stand in it quietly.\", sn:\"Open your heart. Let yourself be taught.\" },\n  { nm:\"Third\", pos:\"The Threshold\", dom:\"Where inner meets outer — the transition point.\",\n    y:\"Active at the crossing. The ego wants to announce itself. Stay humble at the gate.\",\n    n:\"Yielding at the threshold. Hesitation — wisdom or fear? The lesson will tell you.\",\n    sy:\"You're about to express something. Be careful. Stay humble.\", sn:\"You're holding back. Is this wisdom or fear?\" },\n  { nm:\"Fourth\", pos:\"The Minister\", dom:\"The outer world — influence and responsibility.\",\n    y:\"Active near power. The temptation is to push. The wisdom is to serve.\",\n    n:\"Receptive near larger forces. Let them shape you. You need do nothing.\",\n    sy:\"You're near something powerful. Serve, don't control.\", sn:\"Let go. You're being guided.\" },\n  { nm:\"Fifth\", pos:\"The Ruler\", dom:\"The highest expression of this energy.\",\n    y:\"Creative force at its peak. Lead yourself toward truth.\",\n    n:\"Supreme receptivity. The most powerful thing right now is surrender — not to circumstance, but to truth.\",\n    sy:\"Full power. Use it for honesty.\", sn:\"Surrender. This is the strongest move.\" },\n  { nm:\"Sixth\", pos:\"The Sage\", dom:\"Beyond the situation — the spiritual dimension.\",\n    y:\"Force beyond its natural scope. If you're pushing too hard — stop. Return to basics.\",\n    n:\"Complete release. This arrives when you stop looking for it.\",\n    sy:\"You've gone too far. Come back to basics.\", sn:\"Let go completely. It finds you when you stop searching.\" },\n];\n",
+    "triRel": "function triRel(lo,up,simple) {\n  const l=TRIGRAMS[lo],u=TRIGRAMS[up];\n  if(!l||!u) return \"\";\n  if(lo===up) return simple\n    ? `${l.name} doubled — fully immersed in ${l.nature.toLowerCase()}. Embrace it, but stay aware.`\n    : `When ${l.name} doubles, its quality reaches absolute expression. ${l.nature} above and below — no counterbalance. Embody this completely, but watch for its shadow.`;\n  if(simple) return `${u.name} (${u.nature.toLowerCase()}) above, ${l.name} (${l.nature.toLowerCase()}) below. Your outer world reflects ${u.q.split(\",\")[0].trim().toLowerCase()} energy; your inner world holds ${l.q.split(\",\")[0].trim().toLowerCase()} energy.`;\n  const m={\n    \"heaven,earth\":\"Heaven above Earth — energies moving apart. Separation. Yet sometimes things must come apart before they come together truly.\",\n    \"earth,heaven\":\"Earth above Heaven — the receptive meets the creative. Perfect communion. Energies flowing toward each other.\",\n    \"water,fire\":\"Water above Fire — the pot on the flame. Opposing forces in dynamic balance. Completion through tension.\",\n    \"fire,water\":\"Fire above Water — clarity above danger. Energies moving apart. Almost complete, but the last step is hardest.\",\n    \"thunder,wind\":\"Thunder and Wind — what thunder shakes loose, wind carries everywhere. Shock of recognition, then gradual permeation.\",\n    \"wind,thunder\":\"Wind above Thunder — gentle influence before decisive action. Understanding arrives softly, then erupts.\",\n    \"mountain,lake\":\"Mountain and Lake — stillness and joy connected at invisible depths.\",\n    \"lake,mountain\":\"Lake above Mountain — joy on stillness. When truly grounded, joy is effortless.\",\n  };\n  return m[`${lo},${up}`]||`${u.name} above, ${l.name} below. Outer: ${u.q.split(\",\")[0].trim().toLowerCase()} energy. Inner: ${l.q.split(\",\")[0].trim().toLowerCase()} energy. The lesson lives in this interplay.`;\n}\n",
+    "getThemeForDay": "function getThemeForDay(day) {\n  for (const key in LESSON_THEMES) {\n    const [s, e] = LESSON_THEMES[key].range;\n    if (day >= s && day <= e) return { ...LESSON_THEMES[key], key };\n  }\n  return { ...LESSON_THEMES[\"undoing_meaning\"], key: \"undoing_meaning\" };\n}\n",
+    "deadLines": [
+      "  const lT = h1 ? TRIGRAMS[h1.lTri] : null,\n    uT = h1 ? TRIGRAMS[h1.uTri] : null;\n",
+      "        const th = getThemeForDay(l.day);\n",
+      "      lineSln: hexData?.sln || [],\n"
+    ]
+  }
+}
