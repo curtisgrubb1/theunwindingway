@@ -8699,8 +8699,154 @@ function App() {
     }
   }, toast)));
 }
+// ── A lesson offered by a friend ─────────────────────────────────────────────
+// Links sent from The Way's iMessage card carry ?day=N. Show that lesson on its
+// own page. It never touches the reader's own place in the practice: someone on
+// lesson 112 who opens a friend's lesson 47 is still on 112 afterwards. Someone
+// new reads the lesson, then begins at the beginning.
+function sharedLessonDay() {
+  try {
+    const m = /[?&]day=(\d{1,3})(?:&|$)/.exec(window.location.search || "");
+    const n = m ? parseInt(m[1], 10) : 0;
+    return n >= 1 && n <= LESSONS.length ? n : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+function isPractitioner() {
+  try {
+    return !!(localStorage.getItem("theway_welcomed") || localStorage.getItem("theway_currentDay"));
+  } catch (e) {
+    return false;
+  }
+}
+function SharedLesson({
+  n,
+  onDone
+}) {
+  const ls = LESSONS.find(l => l.day === n) || LESSONS[n - 1];
+  const returning = isPractitioner();
+  const P = {
+    fontFamily: "'Cormorant Garamond',serif",
+    fontSize: 16,
+    fontWeight: 300,
+    color: "rgba(212,208,200,.6)",
+    lineHeight: 2,
+    textAlign: "left"
+  };
+  useEffect(() => {
+    try {
+      window.scrollTo(0, 0);
+    } catch (e) {}
+  }, []);
+  return React.createElement(React.Fragment, null, React.createElement("style", null, FONTS, `
+    *{margin:0;padding:0;box-sizing:border-box}body{background:#0e0e0c}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .btn{background:none;border:1px solid rgba(196,149,106,.3);color:#c4956a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;letter-spacing:2px;text-transform:uppercase;padding:14px 36px;cursor:pointer;transition:all .5s ease}
+    .btn:hover{border-color:rgba(196,149,106,.7);background:rgba(196,149,106,.05);box-shadow:0 0 30px rgba(196,149,106,.08)}.btn:active{transform:scale(.98)}
+  `), React.createElement("div", {
+    style: {
+      minHeight: "100vh",
+      background: "#0e0e0c",
+      color: "#d4d0c8",
+      fontFamily: "'DM Sans',sans-serif",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "80px 24px 100px",
+      animation: "fadeIn 1s ease-out"
+    }
+  }, React.createElement("div", {
+    style: {
+      maxWidth: 460,
+      width: "100%",
+      textAlign: "center"
+    }
+  }, React.createElement(Lb, null, "Lesson ", ls.day), React.createElement("div", {
+    style: {
+      fontSize: 10,
+      letterSpacing: 2,
+      color: "rgba(196,149,106,.25)",
+      textTransform: "uppercase",
+      marginBottom: 24
+    }
+  }, getThemeForDay(ls.day).name), React.createElement("h2", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontSize: 28,
+      fontWeight: 300,
+      lineHeight: 1.4,
+      color: "#d4d0c8",
+      marginBottom: 40,
+      letterSpacing: 1
+    }
+  }, "\"", ls.title, "\""), React.createElement(Dv, null), React.createElement("div", {
+    style: {
+      height: 40
+    }
+  }), React.createElement("div", {
+    style: {
+      maxWidth: 440,
+      margin: "0 auto 60px"
+    }
+  }, ls.text.split(/\n+/).map((tp, ti) => React.createElement("p", {
+    key: ti,
+    style: {
+      ...P,
+      marginBottom: tp.length < 60 ? 4 : 20
+    }
+  }, tp))), React.createElement("div", {
+    style: {
+      maxWidth: 420,
+      margin: "0 auto 40px",
+      padding: "20px 24px",
+      border: "1px solid rgba(196,149,106,.1)",
+      background: "rgba(196,149,106,.02)"
+    }
+  }, React.createElement("p", {
+    style: {
+      ...P,
+      fontStyle: "italic",
+      textAlign: "center",
+      color: "rgba(212,208,200,.55)",
+      lineHeight: 1.8
+    }
+  }, "This lesson was offered to you.", React.createElement("br", null), returning ? "Your own place in the practice has not moved." : "The practice is a year of lessons, one each day. It begins at the beginning.")), React.createElement("button", {
+    className: "btn",
+    onClick: onDone
+  }, returning ? "Return to your practice" : "Begin"), returning ? null : React.createElement("div", {
+    style: {
+      marginTop: 28
+    }
+  }, React.createElement("a", {
+    href: "https://apps.apple.com/us/app/the-unwinding-way/id6799276997",
+    style: {
+      color: "rgba(196,149,106,.4)",
+      fontSize: 11,
+      letterSpacing: 2,
+      textTransform: "uppercase",
+      textDecoration: "none"
+    }
+  }, "Also on iPhone")))));
+}
+function Root() {
+  const [shared, setShared] = useState(sharedLessonDay);
+  if (!shared) return React.createElement(App);
+  return React.createElement(SharedLesson, {
+    n: shared,
+    onDone: () => {
+      try {
+        window.history.replaceState(null, "", window.location.pathname);
+      } catch (e) {}
+      try {
+        window.scrollTo(0, 0);
+      } catch (e) {}
+      setShared(0);
+    }
+  });
+}
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(App));
+root.render(React.createElement(Root));
 </script>
 <script>                                           
 if ('serviceWorker' in navigator) {                 
