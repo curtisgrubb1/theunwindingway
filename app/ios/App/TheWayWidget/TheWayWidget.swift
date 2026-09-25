@@ -108,7 +108,9 @@ enum Practice {
         // Between them.
         switch plan.f {
         case "hourly":
-            return m < 5 ? Moment(label: "AS THE HOUR STRIKES", text: plan.r ?? idea, note: nil) : plain
+            // Part II calls it "our hourly remembrance"; earlier lessons, "as the hour strikes".
+            let hourLabel = day >= 221 ? "HOURLY REMEMBRANCE" : "AS THE HOUR STRIKES"
+            return m < 5 ? Moment(label: hourLabel, text: plan.r ?? idea, note: nil) : plain
         case "halfhour":
             return (m < 5 || (30..<35).contains(m))
                 ? Moment(label: "EVERY HALF HOUR", text: plan.r ?? idea, note: nil) : plain
