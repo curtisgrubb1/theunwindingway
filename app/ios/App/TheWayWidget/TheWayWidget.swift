@@ -156,9 +156,11 @@ enum Practice {
     private static func practiceMoment(_ plan: DayPlan, minute: Int, wake: Int, sleep: Int, idea: String) -> Moment? {
         let morning = wake..<(wake + 90)
         let evening = (sleep - 90)..<sleep
-        let morningText = plan.p ?? plan.th ?? idea
+        // The lesson leads in the morning. (Part II's "What Is…" themes are too
+        // long for a widget and displaced the lesson; they stay in the app.)
+        let morningText = plan.p ?? idea
         let eveningText = plan.pe ?? plan.p ?? idea
-        let morningLabel = plan.tt.map { $0.uppercased() } ?? "MORNING PRACTICE"
+        let morningLabel = "MORNING PRACTICE"
 
         switch plan.w {
         case "ampm":
