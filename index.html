@@ -8726,6 +8726,18 @@ function SharedLesson({
 }) {
   const ls = LESSONS.find(l => l.day === n) || LESSONS[n - 1];
   const returning = isPractitioner();
+  // A blessing sent from Messages carries its words in the link. Show them only
+  // if they are truly the lesson's own words, so no one can put other text on
+  // this page by editing a link.
+  const blessing = (() => {
+    try {
+      const q = new URLSearchParams(window.location.search || "");
+      const t = (q.get("title") || "").trim();
+      return q.get("kind") === "blessing" && t.length > 3 && t.length < 200 && ls.text.includes(t) ? t : null;
+    } catch (e) {
+      return null;
+    }
+  })();
   const P = {
     fontFamily: "'Cormorant Garamond',serif",
     fontSize: 16,
@@ -8762,7 +8774,29 @@ function SharedLesson({
       width: "100%",
       textAlign: "center"
     }
-  }, React.createElement(Lb, null, "Lesson ", ls.day), React.createElement("div", {
+  }, blessing ? React.createElement("div", {
+    style: {
+      marginBottom: 70
+    }
+  }, React.createElement(Lb, null, "A blessing"), React.createElement("p", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontSize: 26,
+      fontWeight: 300,
+      fontStyle: "italic",
+      lineHeight: 1.5,
+      color: "#d4d0c8",
+      marginBottom: 36
+    }
+  }, blessing), React.createElement(Dv, null), React.createElement("p", {
+    style: {
+      fontSize: 10,
+      letterSpacing: 2,
+      color: "rgba(196,149,106,.3)",
+      textTransform: "uppercase",
+      marginTop: 36
+    }
+  }, "Its words come from this lesson")) : null, React.createElement(Lb, null, "Lesson ", ls.day), React.createElement("div", {
     style: {
       fontSize: 10,
       letterSpacing: 2,
@@ -8811,7 +8845,7 @@ function SharedLesson({
       color: "rgba(212,208,200,.55)",
       lineHeight: 1.8
     }
-  }, "This lesson was offered to you.", React.createElement("br", null), returning ? "Your own place in the practice has not moved." : "The practice is a year of lessons, one each day. It begins at the beginning.")), React.createElement("button", {
+  }, blessing ? "This blessing was offered to you." : "This lesson was offered to you.", React.createElement("br", null), returning ? "Your own place in the practice has not moved." : "The practice is a year of lessons, one each day. It begins at the beginning.")), React.createElement("button", {
     className: "btn",
     onClick: onDone
   }, returning ? "Return to your practice" : "Begin"), returning ? null : React.createElement("div", {
