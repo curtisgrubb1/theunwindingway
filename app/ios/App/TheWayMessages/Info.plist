@@ -9,5 +9,9 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.message-payload-provider</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>CormorantGaramond-Light.ttf</string>
+	</array>
 </dict>
 </plist>

@@ -44,7 +44,7 @@ enum TheWayWidgetBridge {
         let standard = UserDefaults.standard
         var wrote = false
 
-        for key in ["widget_day", "widget_title"] {
+        for key in ["widget_day", "widget_title", "widget_wake"] {
             if let value = standard.string(forKey: prefix + key) ?? standard.string(forKey: key) {
                 shared.set(value, forKey: key)
                 wrote = true

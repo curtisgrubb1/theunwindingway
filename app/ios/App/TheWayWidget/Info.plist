@@ -13,5 +13,9 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>CormorantGaramond-Light.ttf</string>
+	</array>
 </dict>
 </plist>

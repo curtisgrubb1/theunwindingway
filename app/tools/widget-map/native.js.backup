@@ -312,14 +312,11 @@
       if (!P.Preferences) return;
       var lesson = lessonAt(currentIndex());
       if (!lesson) return;
-      // Written to the app's own storage; TheWayWidgetBridge mirrors these
+      // Written to the app's own storage; TheWayWidgetBridge mirrors these two
       // keys into the shared App Group when the app goes inactive, which is
       // when someone is on their way to look at the home screen.
       P.Preferences.set({ key: 'widget_day', value: String(lesson.day) });
       P.Preferences.set({ key: 'widget_title', value: String(lesson.title || '') });
-      // The morning practice on the widget starts at the reminder time, which
-      // is the closest thing the app has to "when you wake".
-      P.Preferences.set({ key: 'widget_wake', value: remindAt() });
       diag('widget state written — day ' + lesson.day);
     } catch (e) { diag('widget sync failed', e); }
   }
@@ -463,7 +460,6 @@
       var v = e.target.value || '07:00';
       setAt(v);
       localStorage.setItem(PREF_AT, v);
-      syncWidget();
       if (on) schedule();
     }
 
