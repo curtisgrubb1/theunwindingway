@@ -23,6 +23,10 @@
 //  mirror runs when the app goes inactive or backgrounds — which is precisely
 //  when someone leaves to look at their home screen.
 //
+//  The calendar anchor travels both ways: a Stay tapped on the widget is
+//  written into the App Group, and copied back here when the app comes
+//  forward, before the web layer asks for it.
+//
 
 import Foundation
 import WidgetKit
@@ -35,6 +39,14 @@ enum TheWayWidgetBridge {
     /// Capacitor namespaces its Preferences keys with this.
     private static let prefix = "CapacitorStorage."
 
+    /// Written by the app only; the widget reads them.
+    private static let outbound = ["widget_day", "widget_title", "widget_wake"]
+
+    /// The calendar anchor, which both sides can move: the app when a lesson
+    /// is chosen or Stay is tapped there, the widget when Stay is tapped on it.
+    /// Whichever was set most recently (widget_anchor_at, in ms) wins.
+    private static let anchor = ["widget_anchor_day", "widget_anchor_date", "widget_anchor_at"]
+
     static func sync() {
         guard let shared = UserDefaults(suiteName: group) else {
             NSLog("[The Way] App Group \(group) unavailable — check the entitlement on both targets")
@@ -42,26 +54,31 @@ enum TheWayWidgetBridge {
         }
 
         let standard = UserDefaults.standard
-        var wrote = false
+        func mine(_ key: String) -> String? { standard.string(forKey: prefix + key) ?? standard.string(forKey: key) }
 
-        for key in ["widget_day", "widget_title"] {
-            if let value = standard.string(forKey: prefix + key) ?? standard.string(forKey: key) {
+        // A Stay tapped on the widget comes back into the app first, so the
+        // copy below cannot overwrite it with the older anchor.
+        let appAt = Int64(mine("widget_anchor_at") ?? "") ?? 0
+        let widgetAt = Int64(shared.string(forKey: "widget_anchor_at") ?? "") ?? 0
+        if widgetAt > appAt {
+            for key in anchor {
+                if let value = shared.string(forKey: key) { standard.set(value, forKey: prefix + key) }
+            }
+            NSLog("[The Way] took the widget's anchor — lesson \(shared.string(forKey: "widget_anchor_day") ?? "?")")
+        }
+
+        var wrote = false
+        for key in outbound + (widgetAt > appAt ? [] : anchor) {
+            if let value = mine(key), shared.string(forKey: key) != value {
                 shared.set(value, forKey: key)
                 wrote = true
             }
         }
 
-        guard wrote else {
-            let candidates = standard.dictionaryRepresentation().keys
-                .filter { $0.contains("widget_") }
-                .sorted()
-            NSLog("[The Way] nothing to mirror. Keys containing widget_: \(candidates)")
-            return
-        }
+        guard wrote else { return }
 
-        // Without this the widget waits for its next timeline date, which is
-        // midnight — so advancing a lesson would appear to do nothing all day.
-        NSLog("[The Way] mirrored to App Group — day \(shared.string(forKey: "widget_day") ?? "?"), title \(shared.string(forKey: "widget_title") ?? "?")")
+        // Without this the widget would wait for its next timeline refresh.
+        NSLog("[The Way] mirrored to App Group — day \(shared.string(forKey: "widget_day") ?? "?"), anchor \(shared.string(forKey: "widget_anchor_day") ?? "-") on \(shared.string(forKey: "widget_anchor_date") ?? "-")")
         WidgetCenter.shared.reloadAllTimelines()
     }
 }

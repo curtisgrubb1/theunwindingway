@@ -13,6 +13,9 @@ out=[]
 for d in range(1,366):
     e=M[d]; x={}
     x['i']=clean(e.get('idea') or L[d]['title'])
+    # The lesson's own title, when the idea differs (the reviews), so the widget
+    # can name a reminder the way the app does.
+    if clean(L[d]['title'])!=x['i']: x['t']=clean(L[d]['title'])
     x['w']=e['when']; x['n']=e.get('n',0)
     if e.get('len'): x['len']=clean(e['len'])
     for k,kk in [('p','p'),('pe','pe'),('r','r'),('r2','r2'),('b','b'),('theme','th')]:

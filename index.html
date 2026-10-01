@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Way">
+<meta name="apple-itunes-app" content="app-id=6799276997">
 <meta name="theme-color" content="#0e0e0c">
 <meta name="description" content="The Way — a daily practice of undoing. One lesson each day for a year. An oracle to consult when the way is unclear. A practice of letting go, carried in the pocket.">
 <title>The Way — A Daily Practice of Undoing</title>
@@ -3718,6 +3719,253 @@ function interludeSpan(t) {
   if (/^Final Lessons/.test(t)) return 5;
   return 1;
 }
+// ── Following the calendar ───────────────────────────────────────────────────
+// The Workbook gives one lesson a day, so the lesson turns each morning by
+// itself. Where someone is in the year is kept as an anchor — "lesson L on
+// date D" — and today's lesson is L plus the days since D. Moving to a lesson
+// by hand sets a new anchor. Staying with a lesson pushes the anchor to
+// tomorrow, so tomorrow shows the same lesson again; staying is always a
+// choice, never something that happens by default.
+//
+// The day turns at the morning reminder time (7:00 if none is set), not at
+// midnight, so the evening's lesson is still the one shown at night. The
+// widget (TheWayWidget.swift) and the reminders (native.js) do exactly the
+// same arithmetic on the same three keys.
+const CAL_DAY = "theway_anchorDay";
+const CAL_DATE = "theway_anchorDate";
+const CAL_AT = "theway_anchorAt";
+function calWake() {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(localStorage.getItem("theway_remind_at") || "");
+  return m ? +m[1] * 60 + +m[2] : 7 * 60;
+}
+// Days are counted as whole calendar dates, so a time change never skips one.
+function calToday(now) {
+  now = now || new Date();
+  const before = now.getHours() * 60 + now.getMinutes() < calWake() ? 1 : 0;
+  return Math.round(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - before) / 86400000);
+}
+function calKey(n) {
+  return new Date(n * 86400000).toISOString().slice(0, 10);
+}
+function calParse(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+  return m ? Math.round(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 86400000) : null;
+}
+function calRead() {
+  try {
+    const L = parseInt(localStorage.getItem(CAL_DAY), 10);
+    const D = calParse(localStorage.getItem(CAL_DATE));
+    return L >= 1 && L <= LESSONS.length && D !== null ? { L, D } : null;
+  } catch (e) {
+    return null;
+  }
+}
+function calWrite(L, D) {
+  try {
+    localStorage.setItem(CAL_DAY, String(L));
+    localStorage.setItem(CAL_DATE, calKey(D));
+    localStorage.setItem(CAL_AT, String(Date.now())); // written last: the native layer listens for it
+  } catch (e) {}
+}
+// Today's lesson, as an index into LESSONS. Someone arriving from before the
+// calendar is anchored on the lesson they are on today: nobody jumps ahead.
+function calIndex() {
+  let a = calRead();
+  const today = calToday();
+  if (!a) {
+    let i = 0;
+    try {
+      i = parseInt(localStorage.getItem("theway_currentDay") || "0", 10) || 0;
+    } catch (e) {}
+    a = { L: Math.min(LESSONS.length, Math.max(1, i + 1)), D: today };
+    calWrite(a.L, a.D);
+    // Someone who was already practicing hears once that the lessons now turn.
+    try {
+      if (localStorage.getItem("theway_currentDay") !== null) localStorage.setItem("theway_calNote", "pending");
+    } catch (e) {}
+  }
+  return Math.min(LESSONS.length, a.L + Math.max(0, today - a.D)) - 1;
+}
+function calSetToday(index) {
+  calWrite(index + 1, calToday());
+}
+function calStaying() {
+  const a = calRead();
+  return !!a && a.D > calToday();
+}
+// Coming back after time away. The calendar keeps moving while someone is not
+// practicing, so after three or more days the app asks, once, where they would
+// like to be: with the lesson they last had, or with today's. Neither is
+// "behind". theway_seen is the practice date and lesson last seen.
+const CAL_SEEN = "theway_seen";
+function calSeen(lesson) {
+  try {
+    localStorage.setItem(CAL_SEEN, calKey(calToday()) + "|" + lesson);
+  } catch (e) {}
+}
+function calAway() {
+  const now = calIndex() + 1;
+  let away = null;
+  try {
+    const m = /^(\d{4}-\d{2}-\d{2})\|(\d+)$/.exec(localStorage.getItem(CAL_SEEN) || "");
+    const seen = m ? calParse(m[1]) : null;
+    const was = m ? parseInt(m[2], 10) : 0;
+    if (seen !== null && calToday() - seen >= 3 && now > was && was >= 1) away = {
+      from: was,
+      to: now
+    };
+  } catch (e) {}
+  if (!away) calSeen(now);
+  return away;
+}
+function calNotePending() {
+  try {
+    return localStorage.getItem("theway_calNote") === "pending";
+  } catch (e) {
+    return false;
+  }
+}
+function calStay(on) {
+  const L = calIndex() + 1;
+  const today = calToday();
+  calWrite(L, on ? today + 1 : today);
+}
+function StayLine() {
+  const [on, setOn] = useState(calStaying());
+  useEffect(() => {
+    const f = () => setOn(calStaying());
+    window.addEventListener("tw:calendar", f);
+    document.addEventListener("visibilitychange", f);
+    return () => {
+      window.removeEventListener("tw:calendar", f);
+      document.removeEventListener("visibilitychange", f);
+    };
+  }, []);
+  return React.createElement("div", {
+    style: {
+      margin: "-36px auto 36px",
+      textAlign: "center"
+    }
+  }, React.createElement("button", {
+    onClick: () => {
+      calStay(!on);
+      setOn(!on);
+    },
+    "aria-pressed": on,
+    style: {
+      background: "none",
+      border: "none",
+      fontFamily: "'Cormorant Garamond',serif",
+      fontStyle: "italic",
+      fontSize: 15,
+      fontWeight: 300,
+      color: on ? "#c4956a" : "rgba(196,149,106,.55)",
+      cursor: "pointer",
+      padding: "8px 16px",
+      transition: "color .3s"
+    }
+  }, on ? "Staying with this lesson tomorrow" : "Stay with this lesson tomorrow"));
+}
+const quietBtn = {
+  background: "none",
+  border: "none",
+  color: "rgba(196,149,106,.75)",
+  fontFamily: "'DM Sans',sans-serif",
+  fontSize: 12,
+  letterSpacing: 1.5,
+  cursor: "pointer",
+  padding: "8px 16px",
+  transition: "color .3s"
+};
+function AwayNote({
+  away,
+  onChoose
+}) {
+  const was = LESSONS.find(l => l.day === away.from);
+  return React.createElement("div", {
+    style: {
+      maxWidth: 360,
+      margin: "-8px auto 36px",
+      padding: "20px 24px",
+      border: "1px solid rgba(196,149,106,.12)",
+      background: "rgba(196,149,106,.03)",
+      textAlign: "center"
+    }
+  }, React.createElement("p", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontSize: 17,
+      fontWeight: 300,
+      color: "rgba(212,208,200,.8)",
+      lineHeight: 1.7,
+      margin: "0 0 4px"
+    }
+  }, "You were last with Lesson ", away.from, "."), was && React.createElement("p", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontStyle: "italic",
+      fontSize: 15,
+      fontWeight: 300,
+      color: "rgba(212,208,200,.5)",
+      lineHeight: 1.6,
+      margin: "0 0 14px"
+    }
+  }, was.title), React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 2
+    }
+  }, React.createElement("button", {
+    onClick: () => onChoose(true),
+    style: quietBtn
+  }, "Begin again there"), React.createElement("button", {
+    onClick: () => onChoose(false),
+    style: quietBtn
+  }, "Continue with today's, Lesson ", away.to)));
+}
+function CalendarNote() {
+  return React.createElement("p", {
+    style: {
+      fontFamily: "'Cormorant Garamond',serif",
+      fontStyle: "italic",
+      fontSize: 15,
+      fontWeight: 300,
+      color: "rgba(212,208,200,.55)",
+      lineHeight: 1.7,
+      maxWidth: 320,
+      margin: "-12px auto 32px"
+    }
+  }, "The lessons now turn each morning, one a day. To stay with a lesson longer, look for ", React.createElement("span", {
+    style: {
+      color: "rgba(196,149,106,.8)"
+    }
+  }, "Stay"), " at the end of each lesson.");
+}
+function BeginAgain({
+  onBegin
+}) {
+  return React.createElement("div", {
+    style: {
+      margin: "-36px auto 36px",
+      textAlign: "center"
+    }
+  }, React.createElement("button", {
+    onClick: onBegin,
+    style: {
+      background: "none",
+      border: "none",
+      fontFamily: "'Cormorant Garamond',serif",
+      fontStyle: "italic",
+      fontSize: 15,
+      fontWeight: 300,
+      color: "rgba(196,149,106,.65)",
+      cursor: "pointer",
+      padding: "8px 16px"
+    }
+  }, "Begin again with Lesson 1"));
+}
 function App() {
   const [phase, setPhase] = useState("enter");
   const [prevPh, setPrevPh] = useState("enter");
@@ -3725,26 +3973,69 @@ function App() {
   const [editDay, setEditDay] = useState(false);
   const [dayInput, setDayInput] = useState("");
   const [dayLoaded, setDayLoaded] = useState(false);
+  const [away, setAway] = useState(null);
+  const [calNote, setCalNote] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const r = {
-          value: localStorage.getItem("theway_currentDay")
-        };
-        if (r?.value) setDay(parseInt(r.value, 10) || 0);
+        setDay(calIndex());
+        setAway(calAway());
+        setCalNote(calNotePending());
       } catch (e) {}
       setDayLoaded(true);
     })();
   }, []);
 
+  // The day can turn while the app is open or in the background, and a Stay
+  // tapped on the widget or a reminder arrives from outside ("tw:calendar").
+  useEffect(() => {
+    const sync = () => {
+      try {
+        if (document.visibilityState !== "hidden") {
+          setDay(calIndex());
+          setAway(a => a || calAway());
+        }
+      } catch (e) {}
+    };
+    document.addEventListener("visibilitychange", sync);
+    window.addEventListener("tw:calendar", sync);
+    return () => {
+      document.removeEventListener("visibilitychange", sync);
+      window.removeEventListener("tw:calendar", sync);
+    };
+  }, []);
+
   useEffect(() => {
     if (dayLoaded) {
       try {
+        // A lesson chosen by hand becomes today's lesson, and the days count on from there.
+        if (day !== calIndex()) calSetToday(day);
         localStorage.setItem("theway_currentDay", String(day));
       } catch (e) {}
     }
   }, [day, dayLoaded]);
+  // Going anywhere from the home screen answers the welcome-back question
+  // ("continue") and retires the one-time note.
+  useEffect(() => {
+    if (phase === "enter") return;
+    if (away) {
+      calSeen(away.to);
+      setAway(null);
+    }
+    if (calNote) {
+      try {
+        localStorage.setItem("theway_calNote", "seen");
+      } catch (e) {}
+      setCalNote(false);
+    }
+  }, [phase]);
+  const chooseAway = back => {
+    if (!away) return;
+    if (back) setDay(away.from - 1);
+    calSeen(back ? away.from : away.to);
+    setAway(null);
+  };
   const [lines, setLines] = useState([]);
   const [tI, setTI] = useState(0);
   const [tR, setTR] = useState(null);
@@ -4120,7 +4411,10 @@ function App() {
       marginBottom: 32,
       letterSpacing: 1
     }
-  }, "LESSON ", ls.day), React.createElement("button", {
+  }, "LESSON ", ls.day), away ? React.createElement(AwayNote, {
+    away: away,
+    onChoose: chooseAway
+  }) : calNote ? React.createElement(CalendarNote, null) : null, React.createElement("button", {
     className: "btn",
     onClick: () => go("lesson"),
     style: {
@@ -5834,7 +6128,11 @@ function App() {
       textAlign: "left",
       marginBottom: tp.length < 60 ? 4 : 14
     }
-  }, tp))) : null, React.createElement("button", {
+  }, tp))) : null, ls.day < LESSONS.length ? React.createElement(StayLine, {
+    key: ls.day
+  }) : React.createElement(BeginAgain, {
+    onBegin: () => go("enter", () => setDay(0))
+  }), React.createElement("button", {
     className: "btn",
     onClick: () => go("reflect")
   }, "Continue"), React.createElement("div", {

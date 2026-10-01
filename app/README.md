@@ -56,6 +56,32 @@ Treating it as a day number is silently wrong: index 5 is lesson 6, so every
 reminder names the lesson before the one the practitioner is actually on. Read
 the number off `lesson.day` rather than doing the arithmetic a second time.
 
+
+## The lesson follows the calendar
+
+The lesson turns by itself each morning at the reminder time (7:00 if none is
+set). Where someone is in the year is an anchor — `theway_anchorDay` (lesson
+L) on `theway_anchorDate` (date D) — and today's lesson is L plus the days
+since D, never past 365. `theway_currentDay` is still written, as today's index.
+
+- Choosing a lesson by hand (arrows, list, typed number) re-anchors there.
+- **Stay** pushes the anchor to tomorrow, so tomorrow shows the same lesson.
+  It is offered on the lesson page, on each reminder ("Stay with yesterday's
+  lesson"), and on the medium widget. Tapped again, it is undone.
+- index.html, `src/native.js` and `TheWayWidget.swift` each do this arithmetic;
+  change one, change all three. The widget computes the day itself, so it
+  turns without the app being opened.
+- A Stay tapped on the widget goes into the App Group with a timestamp
+  (`widget_anchor_at`); `TheWayWidgetBridge` brings it back into the app when
+  it comes forward, and the newer anchor wins.
+- **Welcome back.** `theway_seen` holds the practice date and lesson last seen.
+  After three or more days away, if the calendar has moved past that lesson,
+  the home screen asks once: begin again there, or continue with today's.
+  Leaving the home screen counts as continuing.
+- **The one-time note.** Someone who was already practicing when this arrived
+  (`theway_currentDay` existed, no anchor yet) gets `theway_calNote = pending`
+  and sees one line on the home screen until they first leave it.
+- **After Lesson 365** the Stay line becomes "Begin again with Lesson 1".
 ---
 
 ## Tests

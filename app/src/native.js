@@ -307,10 +307,85 @@
     return L[index];
   }
 
+  // ── the calendar ───────────────────────────────────────────────────────────
+  // The lesson turns each morning by itself. index.html keeps the anchor —
+  // lesson L on date D — and today's lesson is L plus the days since D, with
+  // the day turning at the reminder time rather than midnight. The same
+  // arithmetic is repeated here (and in TheWayWidget.swift) so the reminders
+  // and the widget can name the lesson for any day ahead.
+
+  var CAL_DAY = 'theway_anchorDay';
+  var CAL_DATE = 'theway_anchorDate';
+  var CAL_AT = 'theway_anchorAt';
+
+  function wakeMinutes() {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(remindAt());
+    return m ? parseInt(m[1], 10) * 60 + parseInt(m[2], 10) : 7 * 60;
+  }
+
+  // The practice date of a moment, as a whole number of days.
+  function practiceDate(when) {
+    var before = when.getHours() * 60 + when.getMinutes() < wakeMinutes() ? 1 : 0;
+    return Math.round(Date.UTC(when.getFullYear(), when.getMonth(), when.getDate() - before) / 86400000);
+  }
+
+  function dateKey(n) { return new Date(n * 86400000).toISOString().slice(0, 10); }
+
+  function anchor() {
+    var L = parseInt(localStorage.getItem(CAL_DAY), 10);
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(localStorage.getItem(CAL_DATE) || '');
+    if (!(L >= 1) || !m) return null;
+    return { L: L, D: Math.round(Date.UTC(+m[1], +m[2] - 1, +m[3]) / 86400000) };
+  }
+
+  // The lesson index for a practice date. Without an anchor (the app has not
+  // yet run the calendar code) this is simply where they are.
+  function indexOn(date) {
+    var L = allLessons();
+    var a = anchor();
+    if (!a) return currentIndex();
+    var n = L ? L.length : 365;
+    return Math.min(n, a.L + Math.max(0, date - a.D)) - 1;
+  }
+
+  function todayIndex() { return indexOn(practiceDate(new Date())); }
+
+  function setAnchor(L, D) {
+    localStorage.setItem(CAL_DAY, String(L));
+    localStorage.setItem(CAL_DATE, dateKey(D));
+    localStorage.setItem(CAL_AT, String(Date.now()));
+    try { window.dispatchEvent(new Event('tw:calendar')); } catch (e) {}
+  }
+
+  // A Stay tapped on the widget is written into the App Group by the widget,
+  // and TheWayWidgetBridge copies it back into Preferences when the app comes
+  // forward. Whichever anchor was set most recently wins.
+  function adoptWidgetAnchor() {
+    if (!P.Preferences) return Promise.resolve(false);
+    var get = function (k) {
+      return P.Preferences.get({ key: k }).then(function (r) { return r && r.value; }).catch(function () { return null; });
+    };
+    return Promise.all([get('widget_anchor_day'), get('widget_anchor_date'), get('widget_anchor_at')])
+      .then(function (v) {
+        var at = parseInt(v[2], 10) || 0;
+        var mine = parseInt(localStorage.getItem(CAL_AT), 10) || 0;
+        if (!v[0] || !v[1] || at <= mine) return false;
+        _set(CAL_DAY, v[0]);
+        _set(CAL_DATE, v[1]);
+        _set(CAL_AT, String(at));
+        if (P.Preferences) MIRROR_KEYS.forEach(function (k) {
+          if (k.indexOf('theway_anchor') === 0) P.Preferences.set({ key: k, value: localStorage.getItem(k) });
+        });
+        diag('adopted the widget\'s anchor — lesson ' + v[0] + ' on ' + v[1]);
+        try { window.dispatchEvent(new Event('tw:calendar')); } catch (e) {}
+        return true;
+      });
+  }
+
   function syncWidget() {
     try {
       if (!P.Preferences) return;
-      var lesson = lessonAt(currentIndex());
+      var lesson = lessonAt(todayIndex());
       if (!lesson) return;
       // Written to the app's own storage; TheWayWidgetBridge mirrors these
       // keys into the shared App Group when the app goes inactive, which is
@@ -320,6 +395,13 @@
       // The morning practice on the widget starts at the reminder time, which
       // is the closest thing the app has to "when you wake".
       P.Preferences.set({ key: 'widget_wake', value: remindAt() });
+      // The anchor lets the widget turn the lesson by itself each morning.
+      var a = anchor();
+      if (a) {
+        P.Preferences.set({ key: 'widget_anchor_day', value: String(a.L) });
+        P.Preferences.set({ key: 'widget_anchor_date', value: dateKey(a.D) });
+        P.Preferences.set({ key: 'widget_anchor_at', value: localStorage.getItem(CAL_AT) || '0' });
+      }
       diag('widget state written — day ' + lesson.day);
     } catch (e) { diag('widget sync failed', e); }
   }
@@ -328,8 +410,8 @@
 
   // ── daily reminder ─────────────────────────────────────────────────────────
   // Off unless asked for. Rather than one repeating alert, this schedules the
-  // next 60 days individually so each notification carries that day's actual
-  // lesson — and reschedules whenever the app opens.
+  // next 60 days individually so each notification names that morning's
+  // lesson — and reschedules whenever the app opens or the anchor moves.
 
   var PREF_ON = 'theway_remind_on';
   var PREF_AT = 'theway_remind_at'; // "HH:MM"
@@ -365,14 +447,10 @@
       var first = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
       if (first <= now) first.setDate(first.getDate() + 1);
 
-      // Every scheduled reminder names the lesson they are on right now, and
-      // claims nothing about the future. The workbook gives one lesson a day,
-      // but people sit with a lesson for several days, and predicting forward
-      // would name a lesson they never reached. Rescheduling happens on every
-      // app open and whenever the day changes — which is exactly when someone
-      // advances — so this stays true without guessing.
-      var lesson = lessonAt(currentIndex());
-      if (!lesson) {
+      // The reminder fires at the moment the day turns, so each one names the
+      // lesson that begins that morning. Someone who is not ready to move on
+      // can answer it with "Stay with yesterday's lesson".
+      if (!lessonAt(todayIndex())) {
         diag('nothing scheduled — no lesson data available');
         return;
       }
@@ -381,10 +459,15 @@
       for (var i = 0; i < HORIZON; i++) {
         var when = new Date(first.getTime());
         when.setDate(when.getDate() + i);
+        var lesson = lessonAt(indexOn(practiceDate(when)));
+        if (!lesson) break;
         items.push({
           id: 1000 + i,
           title: 'Lesson ' + lesson.day,
           body: lesson.title,
+          actionTypeId: lesson.day > 1 ? ACTIONS : undefined,
+          // `at` lets the widget rewrite a waiting reminder's words when Stay is tapped there.
+          extra: { day: lesson.day, at: when.getTime() },
           schedule: { at: when, allowWhileIdle: true },
         });
       }
@@ -416,6 +499,34 @@
   // registered before React mounts, so on a cold start __twGo does not exist
   // yet — wait for it rather than dropping the tap.
 
+  var ACTIONS = 'TW_LESSON';
+
+  try {
+    if (P.LocalNotifications && P.LocalNotifications.registerActionTypes) {
+      P.LocalNotifications.registerActionTypes({
+        types: [{
+          id: ACTIONS,
+          actions: [{ id: 'stay', title: 'Stay with yesterday\u2019s lesson', foreground: true }],
+        }],
+      }).catch(function (e) { diag('registerActionTypes failed', e); });
+    }
+  } catch (e) { diag('registerActionTypes failed', e); }
+
+  // "Stay" on a reminder: the lesson it announces waits a day, and the one
+  // before it is today's lesson again.
+  function onAction(ev) {
+    try {
+      if (ev && ev.actionId === 'stay') {
+        var day = parseInt(ev.notification && ev.notification.extra && ev.notification.extra.day, 10);
+        if (day > 1) {
+          setAnchor(day - 1, practiceDate(new Date()));
+          diag('staying with lesson ' + (day - 1));
+        }
+      }
+    } catch (e) { diag('stay action failed', e); }
+    openLesson();
+  }
+
   function openLesson() {
     var tries = 0;
     (function attempt() {
@@ -427,7 +538,7 @@
 
   try {
     if (P.LocalNotifications) {
-      P.LocalNotifications.addListener('localNotificationActionPerformed', openLesson);
+      P.LocalNotifications.addListener('localNotificationActionPerformed', onAction);
     }
   } catch (e) { diag('notification tap listener failed', e); }
 
@@ -533,12 +644,20 @@
   // The file lives in DATA, which is Library/NoCloud on iOS — deliberately not
   // backed up to iCloud, so "never transmitted anywhere" stays literally true.
 
-  var MIRROR_KEYS = ['theway_currentDay', 'theway_welcomed'];
+  var MIRROR_KEYS = ['theway_currentDay', 'theway_welcomed', 'theway_anchorDay', 'theway_anchorDate', 'theway_anchorAt'];
   var J_PREFIX = 'theway_j:';
   var BACKUP = 'journal-backup.json';
 
-  var _set = localStorage.setItem.bind(localStorage);
-  var _remove = localStorage.removeItem.bind(localStorage);
+  // The originals, called directly so restores and adoptions are not mirrored
+  // back. The interception below patches Storage.prototype: in WKWebView,
+  // assigning to localStorage.setItem does not replace the method — it stores
+  // an *item* named "setItem", and nothing is intercepted at all.
+  var Store = (typeof Storage !== 'undefined' && Storage.prototype &&
+               typeof Storage.prototype.setItem === 'function') ? Storage.prototype : null;
+  var _protoSet = Store ? Store.setItem : localStorage.setItem;
+  var _protoRemove = Store ? Store.removeItem : localStorage.removeItem;
+  function _set(k, v) { _protoSet.call(localStorage, k, v); }
+  function _remove(k) { _protoRemove.call(localStorage, k); }
   var backupTimer = null;
 
   function journalEntries() {
@@ -612,28 +731,54 @@
   // The app writes progress straight to localStorage, and the storage event
   // does not fire for changes made in the same document — so intercept.
 
-  localStorage.setItem = function (k, v) {
-    _set(k, v);
+  function onSet(k, v) {
     try {
       if (MIRROR_KEYS.indexOf(k) >= 0 && P.Preferences) {
         P.Preferences.set({ key: k, value: String(v) });
       }
       if (k.indexOf(J_PREFIX) === 0) scheduleBackup();
-      if (k === 'theway_currentDay') { syncWidget(); if (remindOn()) schedule(); }
+      if (k === 'theway_currentDay' || k === CAL_AT) refreshSoon();
     } catch (e) { diag('mirror failed for ' + k, e); }
-  };
+  }
 
-  localStorage.removeItem = function (k) {
-    _remove(k);
+  function onRemove(k) {
     try {
       if (MIRROR_KEYS.indexOf(k) >= 0 && P.Preferences) P.Preferences.remove({ key: k });
       if (k.indexOf(J_PREFIX) === 0) scheduleBackup();
     } catch (e) { diag('mirror removal failed for ' + k, e); }
-  };
+  }
+
+  if (Store) {
+    Store.setItem = function (k, v) {
+      _protoSet.call(this, k, v);
+      if (this === localStorage) onSet(String(k), v);
+    };
+    Store.removeItem = function (k) {
+      _protoRemove.call(this, k);
+      if (this === localStorage) onRemove(String(k));
+    };
+    // Clear away the two stray items the old assignment left behind.
+    try { _remove('setItem'); _remove('removeItem'); } catch (e) {}
+  } else {
+    // No Storage prototype (the test harness): patch the object itself.
+    localStorage.setItem = function (k, v) { _set(k, v); onSet(String(k), v); };
+    localStorage.removeItem = function (k) { _remove(k); onRemove(String(k)); };
+  }
 
   // ── lifecycle ──────────────────────────────────────────────────────────────
 
-  function refresh() { syncWidget(); if (remindOn()) schedule(); }
+  function refresh() {
+    return adoptWidgetAnchor()
+      .catch(function () {})
+      .then(function () { syncWidget(); if (remindOn()) schedule(); });
+  }
+
+  // Moving the anchor writes several keys in a row; answer them once.
+  var pending = null;
+  function refreshSoon() {
+    if (pending) return;
+    pending = setTimeout(function () { pending = null; syncWidget(); if (remindOn()) schedule(); }, 50);
+  }
 
   var reloaded = false;
 

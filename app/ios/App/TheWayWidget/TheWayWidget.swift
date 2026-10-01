@@ -14,11 +14,12 @@
 //
 
 import WidgetKit
+import AppIntents
 import SwiftUI
 
 // MARK: - Shared state (mirrored by TheWayWidgetBridge in the app)
 
-private enum Shared {
+enum Shared {
     static let group = "group.com.curtisgrubb.theway"
 
     static func string(_ key: String) -> String? {
@@ -36,6 +37,85 @@ private enum Shared {
         let parts = (string("widget_wake") ?? "07:00").split(separator: ":").compactMap { Int($0) }
         guard parts.count == 2, (0..<24).contains(parts[0]), (0..<60).contains(parts[1]) else { return 7 * 60 }
         return parts[0] * 60 + parts[1]
+    }
+
+    /// The calendar anchor: lesson `L` was the lesson on practice date `D`.
+    /// Written by the app, or by StayIntent when Stay is tapped here.
+    static var anchor: (L: Int, D: Int)? {
+        guard let L = Int(string("widget_anchor_day") ?? ""), (1...365).contains(L),
+              let D = WayCalendar.parse(string("widget_anchor_date") ?? "")
+        else { return nil }
+        return (L, D)
+    }
+
+    static func setAnchor(_ L: Int, _ D: Int) {
+        guard let defaults = UserDefaults(suiteName: group) else { return }
+        let values = [
+            "widget_anchor_day": String(L),
+            "widget_anchor_date": WayCalendar.key(D),
+            "widget_anchor_at": String(Int64(Date().timeIntervalSince1970 * 1000)),
+            "widget_day": String(L),
+        ]
+        for (k, v) in values {
+            defaults.set(v, forKey: k)
+            defaults.removeObject(forKey: "CapacitorStorage.\(k)")
+        }
+    }
+}
+
+// MARK: - The calendar
+//
+// The lesson turns each morning by itself, as the Workbook gives one lesson a
+// day. Today's lesson is the anchor's lesson plus the days since its date. The
+// day turns at the wake time (the app's reminder time), not at midnight, so
+// the evening's lesson is still the one shown at night. index.html and
+// native.js do the same arithmetic on the same values.
+
+enum WayCalendar {
+    private static let utc: Calendar = {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = TimeZone(identifier: "UTC")!
+        return c
+    }()
+
+    /// The practice date of a moment, as whole days since 1970.
+    static func practiceDay(_ date: Date, wake: Int = Shared.wakeMinutes) -> Int {
+        let c = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        let minute = (c.hour ?? 0) * 60 + (c.minute ?? 0)
+        guard let midnight = utc.date(from: DateComponents(year: c.year, month: c.month, day: c.day)) else { return 0 }
+        let days = Int((midnight.timeIntervalSince1970 / 86400).rounded())
+        return minute < wake ? days - 1 : days
+    }
+
+    static func parse(_ s: String) -> Int? {
+        let p = s.split(separator: "-").compactMap { Int($0) }
+        guard p.count == 3, let d = utc.date(from: DateComponents(year: p[0], month: p[1], day: p[2])) else { return nil }
+        return Int((d.timeIntervalSince1970 / 86400).rounded())
+    }
+
+    static func key(_ n: Int) -> String {
+        let d = utc.dateComponents([.year, .month, .day], from: Date(timeIntervalSince1970: TimeInterval(n) * 86400))
+        return String(format: "%04d-%02d-%02d", d.year ?? 1970, d.month ?? 1, d.day ?? 1)
+    }
+
+    /// The lesson on a practice date. Without an anchor (the app has not run
+    /// since this update) it is simply the lesson the app last wrote.
+    static func lesson(on day: Int) -> Int {
+        guard let a = Shared.anchor else { return Shared.day }
+        return min(365, a.L + max(0, day - a.D))
+    }
+
+    /// Whether tomorrow keeps the lesson of the given practice date.
+    static func staying(on day: Int) -> Bool {
+        guard let a = Shared.anchor else { return false }
+        return a.D > day
+    }
+
+    /// Stay with today's lesson tomorrow, or — tapped again — move on after all.
+    static func toggleStay(now: Date = Date()) {
+        let today = practiceDay(now)
+        let L = lesson(on: today)
+        Shared.setAnchor(L, staying(on: today) ? today : today + 1)
     }
 }
 
@@ -55,6 +135,7 @@ struct DayPlan: Decodable {
     let th: String?        // Part II special theme
     let tt: String?        // its title ("What Is Forgiveness?")
     let ideas: [String]?   // review ideas
+    let t: String?         // the lesson's title, when it differs from the idea
 }
 
 enum Plans {
@@ -226,12 +307,18 @@ struct LessonEntry: TimelineEntry {
     let date: Date
     let day: Int
     let moment: Moment
+    var staying: Bool = false
 
     static let placeholder = LessonEntry(
         date: Date(),
         day: 1,
         moment: Moment(label: "LESSON 1", text: "Nothing I see means anything.", note: nil)
     )
+
+    func sameAs(_ other: LessonEntry?) -> Bool {
+        guard let other else { return false }
+        return day == other.day && moment == other.moment && staying == other.staying
+    }
 }
 
 struct LessonProvider: TimelineProvider {
@@ -242,36 +329,36 @@ struct LessonProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<LessonEntry>) -> Void) {
-        // Walk the rest of today in five-minute steps and keep only the
-        // moments where what the lesson asks for changes.
-        let cal = Calendar.current
+        // Walk the next twenty-four hours in five-minute steps and keep only
+        // the moments where what the widget shows changes. The span always
+        // crosses the next wake time, so the new lesson arrives on its own
+        // each morning, whether or not the app has been opened.
         let now = Date()
-        let startOfDay = cal.startOfDay(for: now)
-        let midnight = cal.date(byAdding: .day, value: 1, to: startOfDay) ?? now.addingTimeInterval(3600)
+        let step: TimeInterval = 5 * 60
+        let start = (now.timeIntervalSinceReferenceDate / step).rounded(.down) * step + step
+        let end = now.addingTimeInterval(24 * 3600)
 
         var entries: [LessonEntry] = [entry(at: now)]
-        let nowMinute = cal.component(.hour, from: now) * 60 + cal.component(.minute, from: now)
-        var minute = (nowMinute / 5 + 1) * 5
-        while minute < 24 * 60 {
-            let date = startOfDay.addingTimeInterval(TimeInterval(minute * 60))
+        var date = Date(timeIntervalSinceReferenceDate: start)
+        while date < end {
             let next = entry(at: date)
-            if next.moment != entries.last?.moment { entries.append(next) }
-            minute += 5
+            if !next.sameAs(entries.last) { entries.append(next) }
+            date = date.addingTimeInterval(step)
         }
-
-        // After midnight the app sets the new day when it next opens; until
-        // then the widget stays on the lesson it knows.
-        completion(Timeline(entries: entries, policy: .after(midnight)))
+        completion(Timeline(entries: entries, policy: .after(end)))
     }
 
     private func entry(at date: Date) -> LessonEntry {
         let cal = Calendar.current
         let minute = cal.component(.hour, from: date) * 60 + cal.component(.minute, from: date)
-        let day = Shared.day
+        let wake = Shared.wakeMinutes
+        let today = WayCalendar.practiceDay(date, wake: wake)
+        let day = WayCalendar.lesson(on: today)
         return LessonEntry(
             date: date,
             day: day,
-            moment: Practice.moment(day: day, fallbackTitle: Shared.title, at: minute, wake: Shared.wakeMinutes)
+            moment: Practice.moment(day: day, fallbackTitle: Shared.title, at: minute, wake: wake),
+            staying: WayCalendar.staying(on: today)
         )
     }
 }
@@ -335,12 +422,27 @@ struct TheWayWidgetView: View {
     private var homeScreen: some View {
         let small = family == .systemSmall
         return VStack(alignment: .leading, spacing: 0) {
-            Text(entry.moment.label)
-                .font(.system(size: 9, weight: .medium))
-                .tracking(1.8)
-                .foregroundColor(.wayGold.opacity(0.75))
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+            HStack(alignment: .firstTextBaseline) {
+                Text(entry.moment.label)
+                    .font(.system(size: 9, weight: .medium))
+                    .tracking(1.8)
+                    .foregroundColor(.wayGold.opacity(0.75))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                if !small && entry.day < 365 {
+                    Spacer(minLength: 8)
+                    // Staying is always a choice. Tapped again, it lets the
+                    // lesson turn tomorrow after all.
+                    Button(intent: StayIntent()) {
+                        Text(entry.staying ? "STAYING ANOTHER DAY" : "STAY ANOTHER DAY")
+                            .font(.system(size: 8, weight: .medium))
+                            .tracking(1.6)
+                            .foregroundColor(.wayGold.opacity(entry.staying ? 0.95 : 0.5))
+                            .lineLimit(1)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
 
             Rectangle()
                 .fill(Color.wayGold.opacity(0.18))
