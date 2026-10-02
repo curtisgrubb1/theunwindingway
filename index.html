@@ -3495,6 +3495,61 @@ const Lb = ({
     textAlign: "center"
   }
 }, children);
+// The lesson's own idea, for the line that closes a reading. Usually the title.
+// Review days carry it in the text instead: the review's central thought from
+// 141 on, its first idea before that. Lesson 63's title is cut short in the data.
+const lessonIdea = ls => {
+  if (!ls) return "";
+  const d = +ls.day;
+  const lines = String(ls.text || "").split("\n").map(x => x.trim()).filter(Boolean);
+  let idea = ls.title || "";
+  if (d === 63) idea = "The light of the world brings peace to every mind through my forgiveness.";else if (/^Review of Lesson/i.test(idea)) {
+    if (d >= 141) idea = lines[0] || idea;else {
+      const first = lines[1] || "";
+      idea = d <= 60 ? (first.match(/^[^.!?]*[.!?]/) || [first])[0] : first || idea;
+    }
+  }
+  idea = idea.trim();
+  return /[.!?]$/.test(idea) ? idea : idea + ".";
+};
+// Lines that arrive one at a time, a breath apart, once they come into view.
+const Unfold = ({
+  lines,
+  gap = 2600
+}) => {
+  const ref = useRef(null);
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!el || still || !("IntersectionObserver" in window)) {
+      setShown(lines.length);
+      return;
+    }
+    const timers = [];
+    const io = new IntersectionObserver(es => {
+      if (!es.some(e => e.isIntersecting)) return;
+      io.disconnect();
+      lines.forEach((_, i) => timers.push(setTimeout(() => setShown(n => Math.max(n, i + 1)), i * gap)));
+    }, {
+      threshold: 0.5
+    });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+  return React.createElement("div", {
+    ref: ref
+  }, lines.map((l, i) => React.createElement("div", {
+    key: i,
+    style: {
+      opacity: i < shown ? 1 : 0,
+      transition: "opacity 1.6s ease"
+    }
+  }, l)));
+};
 const Rt = ({
   t
 }) => t ? React.createElement("div", {
@@ -6168,6 +6223,13 @@ function App() {
   }), React.createElement("p", {
     style: {
       ...PI,
+      fontSize: 16,
+      marginBottom: 12,
+      animation: "fadeIn 2s ease-out"
+    }
+  }, "Let what's here be here."), React.createElement("p", {
+    style: {
+      ...PI,
       fontSize: 20,
       lineHeight: 1.7,
       marginBottom: 24,
@@ -6632,68 +6694,6 @@ function App() {
     style: {
       height: 32
     }
-  }), oMode ? React.createElement(React.Fragment, null, React.createElement("div", {
-    className: "rs",
-    style: {
-      maxWidth: 460,
-      margin: "0 auto"
-    }
-  }, React.createElement("div", {
-    style: {
-      padding: 24,
-      border: "1px solid rgba(196,149,106,.1)",
-      background: "rgba(196,149,106,.02)"
-    }
-  }, oQ ? React.createElement("p", {
-    style: {
-      ...PI,
-      textAlign: "center",
-      fontSize: 16,
-      marginBottom: 16
-    }
-  }, "\"", oQ, "\"") : React.createElement("p", {
-    style: {
-      ...P,
-      textAlign: "center",
-      fontSize: 14,
-      color: "rgba(212,208,200,.6)",
-      marginBottom: 16
-    }
-  }, "You consulted the oracle in silence."), React.createElement("div", {
-    style: {
-      marginTop: 8,
-      paddingTop: 16,
-      borderTop: "1px solid rgba(196,149,106,.08)"
-    }
-  }, React.createElement("p", {
-    style: {
-      ...PI,
-      textAlign: "center",
-      color: "#c4956a",
-      opacity: .7,
-      fontSize: 16
-    }
-  }, "Sit with this. Let it work in you."))))) : React.createElement(React.Fragment, null, React.createElement("div", {
-    className: "rs",
-    style: {
-      maxWidth: 460,
-      margin: "0 auto"
-    }
-  }, React.createElement("div", {
-    style: {
-      padding: 24,
-      border: "1px solid rgba(196,149,106,.1)",
-      background: "rgba(196,149,106,.02)"
-    }
-  }, React.createElement("p", {
-    style: {
-      ...P,
-      textAlign: "center"
-    }
-  }, React.createElement("em", null, "\"", ls.title, "\""))))), React.createElement("div", {
-    style: {
-      height: 40
-    }
   }), React.createElement("div", {
     style: {
       textAlign: "center",
@@ -6701,29 +6701,35 @@ function App() {
       margin: "0 auto",
       marginBottom: 40
     }
-  }, React.createElement(Dv, {
-    w: 40
-  }), React.createElement("div", {
-    style: {
-      height: 24
-    }
-  }), React.createElement("p", {
-    style: {
-      fontFamily: "'Cormorant Garamond',serif",
-      fontSize: 18,
-      fontWeight: 300,
-      fontStyle: "italic",
-      color: "rgba(196,149,106,.75)",
-      lineHeight: 1.8
-    }
-  }, "Can you let this go?"), React.createElement("p", {
-    style: {
-      fontSize: 12,
-      color: "rgba(212,208,200,.6)",
-      marginTop: 12,
-      lineHeight: 1.7
-    }
-  }, "Not the truth in it — the grip on it.", React.createElement("br", null), "The reading has done its work. Drop the rest.")), React.createElement("div", {
+  }, React.createElement(Unfold, {
+    lines: [React.createElement("p", {
+      style: {
+        fontFamily: "'Cormorant Garamond',serif",
+        fontSize: 18,
+        fontWeight: 300,
+        fontStyle: "italic",
+        color: "rgba(196,149,106,.75)",
+        lineHeight: 1.8
+      }
+    }, "What does this bring up?"), React.createElement("p", {
+      style: {
+        fontFamily: "'Cormorant Garamond',serif",
+        fontSize: 18,
+        fontWeight: 300,
+        fontStyle: "italic",
+        color: "rgba(196,149,106,.75)",
+        lineHeight: 1.8,
+        marginTop: 10
+      }
+    }, chg.length === 0 ? "Rest here." : chg.length === 6 ? "Can you let go of the one letting go?" : "Can you let it go?"), ...((oMode ? oQ ? "\u201c" + oQ + "\u201d" : "" : lessonIdea(ls)) ? [React.createElement("p", {
+      style: {
+        ...PI,
+        fontSize: 18,
+        color: "rgba(212,208,200,.85)",
+        marginTop: 28
+      }
+    }, oMode ? "\u201c" + oQ + "\u201d" : lessonIdea(ls))] : [])]
+  })), React.createElement("div", {
     style: {
       display: "flex",
       gap: 12,
