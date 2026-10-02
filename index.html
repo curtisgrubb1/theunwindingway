@@ -4722,7 +4722,7 @@ function App() {
           textAlign: "center",
           color: "rgba(212,208,200,.6)"
         }
-      }, "No lessons match \"", searchQ, "\"");
+      }, "No lessons match \u201c", searchQ, "\u201d");
       return filtered.map(l => {
         return React.createElement("button", {
           key: l.day,
@@ -4921,7 +4921,7 @@ function App() {
         textAlign: "center",
         color: "rgba(212,208,200,.6)"
       }
-    }, "No hexagrams match \"", hexSearch, "\"");
+    }, "No hexagrams match \u201c", hexSearch, "\u201d");
     return React.createElement("div", {
       style: {
         display: "grid",
@@ -5504,7 +5504,7 @@ function App() {
         marginBottom: 24,
         color: "rgba(212,208,200,.6)"
       }
-    }, "\"", e.question, "\"") : React.createElement("p", {
+    }, "\u201c", e.question, "\u201d") : React.createElement("p", {
       style: {
         fontSize: 11,
         letterSpacing: 1.5,
@@ -6146,7 +6146,7 @@ function App() {
       marginBottom: 40,
       letterSpacing: 1
     }
-  }, "\"", ls.title, "\""), React.createElement(Dv, null), React.createElement("div", {
+  }, "\u201c", ls.title, "\u201d"), React.createElement(Dv, null), React.createElement("div", {
     style: {
       height: 40
     }
@@ -6253,7 +6253,7 @@ function App() {
       lineHeight: 1.7,
       textAlign: "center"
     }
-  }, "\"", ls.title, "\"")), React.createElement("p", {
+  }, "\u201c", ls.title, "\u201d")), React.createElement("p", {
     style: {
       fontSize: 13,
       color: "rgba(212,208,200,.6)",
@@ -6311,7 +6311,7 @@ function App() {
       marginBottom: 32,
       letterSpacing: 1
     }
-  }, "\"", oQ, "\""), React.createElement("div", {
+  }, "\u201c", oQ, "\u201d"), React.createElement("div", {
     style: {
       minHeight: 120,
       display: "flex",
@@ -6705,27 +6705,27 @@ function App() {
     lines: [React.createElement("p", {
       style: {
         fontFamily: "'Cormorant Garamond',serif",
-        fontSize: 18,
+        fontSize: 21,
         fontWeight: 300,
         fontStyle: "italic",
-        color: "rgba(196,149,106,.75)",
-        lineHeight: 1.8
+        color: "#c4956a",
+        lineHeight: 1.7
       }
     }, "What does this bring up?"), React.createElement("p", {
       style: {
         fontFamily: "'Cormorant Garamond',serif",
-        fontSize: 18,
+        fontSize: 21,
         fontWeight: 300,
         fontStyle: "italic",
-        color: "rgba(196,149,106,.75)",
-        lineHeight: 1.8,
+        color: "#c4956a",
+        lineHeight: 1.7,
         marginTop: 10
       }
     }, chg.length === 0 ? "Can you let it be as it is?" : chg.length === 6 ? "Can you let go of the one letting go?" : "Can you let it go?"), ...(!oMode ? [React.createElement("p", {
       style: {
         ...PI,
-        fontSize: 18,
-        color: "rgba(212,208,200,.85)",
+        fontSize: 21,
+        color: "rgba(212,208,200,.9)",
         marginTop: 28
       }
     }, lessonIdea(ls))] : [])]
@@ -6903,7 +6903,7 @@ function SharedLesson({
       marginBottom: 40,
       letterSpacing: 1
     }
-  }, "\"", ls.title, "\""), React.createElement(Dv, null), React.createElement("div", {
+  }, "\u201c", ls.title, "\u201d"), React.createElement(Dv, null), React.createElement("div", {
     style: {
       height: 40
     }
