@@ -50,10 +50,14 @@ enum Shared {
 
     static func setAnchor(_ L: Int, _ D: Int) {
         guard let defaults = UserDefaults(suiteName: group) else { return }
+        // Later than any stamp already seen, so this Stay wins even if the
+        // phone's clock was set ahead when the last anchor was written.
+        let now = Int64(Date().timeIntervalSince1970 * 1000)
+        let prev = Int64(defaults.string(forKey: "widget_anchor_at") ?? "") ?? 0
         let values = [
             "widget_anchor_day": String(L),
             "widget_anchor_date": WayCalendar.key(D),
-            "widget_anchor_at": String(Int64(Date().timeIntervalSince1970 * 1000)),
+            "widget_anchor_at": String(max(now, prev + 1)),
             "widget_day": String(L),
         ]
         for (k, v) in values {

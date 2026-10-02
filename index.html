@@ -3819,7 +3819,10 @@ function calWrite(L, D) {
   try {
     localStorage.setItem(CAL_DAY, String(L));
     localStorage.setItem(CAL_DATE, calKey(D));
-    localStorage.setItem(CAL_AT, String(Date.now())); // written last: the native layer listens for it
+    // Later than any stamp already seen, so the newest choice wins even if the
+    // phone's clock was set ahead when an earlier one was made.
+    const prev = parseInt(localStorage.getItem(CAL_AT), 10) || 0;
+    localStorage.setItem(CAL_AT, String(Math.max(Date.now(), prev + 1))); // written last: the native layer listens for it
   } catch (e) {}
 }
 // Today's lesson, as an index into LESSONS. Someone arriving from before the
@@ -5916,7 +5919,10 @@ function App() {
       marginTop: 24
     }
   }, React.createElement("button", {
-    onClick: () => go("enter", () => setOMode(false)),
+    onClick: () => go("enter", () => {
+      setOMode(false);
+      setOQ("");
+    }),
     style: {
       background: "none",
       border: "none",
@@ -6302,7 +6308,7 @@ function App() {
     style: {
       textAlign: "center"
     }
-  }, oQ && React.createElement("p", {
+  }, oMode && oQ && React.createElement("p", {
     style: {
       fontFamily: "'Cormorant Garamond',serif",
       fontSize: 18,
@@ -6763,6 +6769,7 @@ function App() {
     className: "btn",
     onClick: () => go("enter", () => {
       setOMode(false);
+      setOQ("");
       setLines([]);
       setTI(0);
       setTR(null);

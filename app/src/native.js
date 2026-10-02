@@ -353,7 +353,9 @@
   function setAnchor(L, D) {
     localStorage.setItem(CAL_DAY, String(L));
     localStorage.setItem(CAL_DATE, dateKey(D));
-    localStorage.setItem(CAL_AT, String(Date.now()));
+    // Later than any stamp already seen, whatever the clock says (see calWrite).
+    var prev = parseInt(localStorage.getItem(CAL_AT), 10) || 0;
+    localStorage.setItem(CAL_AT, String(Math.max(Date.now(), prev + 1)));
     try { window.dispatchEvent(new Event('tw:calendar')); } catch (e) {}
   }
 

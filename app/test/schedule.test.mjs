@@ -198,5 +198,14 @@ const dates = n.map((x) => new Date(x.schedule.at).getTime());
 const spacedByADay = dates.every((t, i) => i === 0 || Math.round((t - dates[i - 1]) / 86400000) === 1);
 check('one day apart', spacedByADay, 'true');
 
+// An anchor stamped while the phone's clock was set ahead must not outrank
+// every later choice. A new anchor always stamps past the last one seen.
+console.log('\nclock set back after a choice');
+const AHEAD = NOW.getTime() + 6 * 3600000;
+r = await run({ index: 33, at: '20:00', now: NOW, anchor: [34, '2026-08-06', AHEAD] });
+await r.act({ actionId: 'stay', notification: { extra: { day: 315 } } });
+check('newer choice taken', r.store.get('theway_anchorDay'), 314);
+check('stamped past the old', Number(r.store.get('theway_anchorAt')) > AHEAD, 'true');
+
 console.log(failures === 0 ? '\n✓ all scheduling checks passed\n' : `\n✗ ${failures} check(s) failed\n`);
 process.exit(failures === 0 ? 0 : 1);
