@@ -7122,6 +7122,51 @@ function TextSizeControl() {
     }
   }, apple ? "Follow my phone's setting" : "Reset"));
 }
+// ── Recovery ─────────────────────────────────────────────────────────────────
+// If anything throws while a screen is drawing, React unmounts the whole app
+// and leaves only the near-black page behind. Catch it here instead: say so
+// quietly, offer a way back, and keep the error so it can be read and fixed.
+function twNoteError(kind, err, extra) {
+  try {
+    const msg = (err && (err.stack || err.message)) || String(err);
+    localStorage.setItem("theway_lastError", JSON.stringify({
+      at: new Date().toISOString(),
+      kind,
+      msg: String(msg).slice(0, 1500),
+      extra: extra ? String(extra).slice(0, 1500) : null
+    }));
+  } catch (e) {}
+}
+window.addEventListener("error", e => twNoteError("error", e.error || e.message));
+window.addEventListener("unhandledrejection", e => twNoteError("promise", e.reason));
+class Recover extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { err: null, info: null };
+  }
+  static getDerivedStateFromError(err) {
+    return { err };
+  }
+  componentDidCatch(err, info) {
+    twNoteError("render", err, info && info.componentStack);
+    this.setState({ info });
+  }
+  render() {
+    if (!this.state.err) return this.props.children;
+    const err = this.state.err;
+    const detail = String((err && err.message) || err) + (this.state.info && this.state.info.componentStack ? "\n" + this.state.info.componentStack.trim().split("\n").slice(0, 4).join("\n") : "");
+    return React.createElement("div", {
+      style: { minHeight: "100vh", background: "#0e0e0c", color: "#d4d0c8", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", textAlign: "center" }
+    }, React.createElement("div", {
+      style: { fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 300, fontStyle: "italic", color: "rgba(212,208,200,.8)", marginBottom: 32, maxWidth: 360, lineHeight: 1.6 }
+    }, "Something interrupted the page. Nothing you’ve practiced is lost."), React.createElement("button", {
+      onClick: () => { try { location.reload(); } catch (e) {} },
+      style: { background: "none", border: "1px solid rgba(196,149,106,.3)", color: "#c4956a", fontFamily: "'DM Sans',sans-serif", fontSize: 13, letterSpacing: 2, textTransform: "uppercase", padding: "14px 36px", cursor: "pointer" }
+    }, "Return"), React.createElement("pre", {
+      style: { marginTop: 48, maxWidth: 480, whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: "ui-monospace,Menlo,monospace", fontSize: 10, lineHeight: 1.5, color: "rgba(212,208,200,.35)", textAlign: "left" }
+    }, detail));
+  }
+}
 function Root() {
   const [shared, setShared] = useState(sharedLessonDay);
   if (!shared) return React.createElement(App);
@@ -7139,7 +7184,7 @@ function Root() {
   });
 }
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(Root));
+root.render(React.createElement(Recover, null, React.createElement(Root)));
 </script>
 <script>                                           
 if ('serviceWorker' in navigator) {                 
