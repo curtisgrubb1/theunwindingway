@@ -302,7 +302,9 @@ enum Practice {
 private extension Color {
     static let wayGold = Color(red: 196 / 255, green: 149 / 255, blue: 106 / 255)
     static let wayInk = Color(red: 14 / 255, green: 14 / 255, blue: 12 / 255)
-    static let wayText = Color(red: 212 / 255, green: 208 / 255, blue: 200 / 255)
+    // Brighter than the app's body text: a widget is read at a glance, often
+    // small and against a bright room.
+    static let wayText = Color(red: 240 / 255, green: 235 / 255, blue: 226 / 255)
 }
 
 // MARK: - Timeline
@@ -393,7 +395,7 @@ struct TheWayWidgetView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                     .widgetAccentable()
-                    .opacity(0.7)
+                    .opacity(0.85)
                 Text(entry.moment.text)
                     .font(.system(size: 13, weight: .regular, design: .serif))
                     .lineLimit(3)
@@ -409,7 +411,7 @@ struct TheWayWidgetView: View {
                     Text("LESSON")
                         .font(.system(size: 7, weight: .semibold))
                         .tracking(1)
-                        .opacity(0.7)
+                        .opacity(0.85)
                     Text("\(entry.day)")
                         .font(.system(size: 20, weight: .light, design: .serif))
                         .minimumScaleFactor(0.6)
@@ -430,7 +432,7 @@ struct TheWayWidgetView: View {
                 Text(entry.moment.label)
                     .font(.system(size: 9, weight: .medium))
                     .tracking(1.8)
-                    .foregroundColor(.wayGold.opacity(0.75))
+                    .foregroundColor(.wayGold)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 if !small && entry.day < 365 {
@@ -441,7 +443,7 @@ struct TheWayWidgetView: View {
                         Text(entry.staying ? "STAYING ANOTHER DAY" : "STAY ANOTHER DAY")
                             .font(.system(size: 8, weight: .medium))
                             .tracking(1.6)
-                            .foregroundColor(.wayGold.opacity(entry.staying ? 0.95 : 0.5))
+                            .foregroundColor(.wayGold.opacity(entry.staying ? 1 : 0.8))
                             .lineLimit(1)
                     }
                     .buttonStyle(.plain)
@@ -449,7 +451,7 @@ struct TheWayWidgetView: View {
             }
 
             Rectangle()
-                .fill(Color.wayGold.opacity(0.18))
+                .fill(Color.wayGold.opacity(0.35))
                 .frame(width: 26, height: 1)
                 .padding(.top, 7)
 
@@ -457,7 +459,7 @@ struct TheWayWidgetView: View {
 
             Text(entry.moment.text)
                 .font(serif(small ? 16 : 19))
-                .foregroundColor(.wayText.opacity(0.9))
+                .foregroundColor(.wayText)
                 .lineSpacing(2)
                 .lineLimit(small ? 5 : 4)
                 .minimumScaleFactor(0.6)
@@ -469,12 +471,12 @@ struct TheWayWidgetView: View {
                 Text("LESSON \(entry.day)")
                     .font(.system(size: 8))
                     .tracking(2.4)
-                    .foregroundColor(.wayGold.opacity(0.75))
+                    .foregroundColor(.wayGold)
                 if !small, let note = entry.moment.note {
                     Spacer()
                     Text(note)
                         .font(serif(12).italic())
-                        .foregroundColor(.wayGold.opacity(0.75))
+                        .foregroundColor(.wayGold)
                         .lineLimit(1)
                 }
             }
