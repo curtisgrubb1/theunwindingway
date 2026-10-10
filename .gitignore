@@ -12,3 +12,7 @@ hexagram-audit-notes.txt
 # Editor scratch
 *.swp
 .idea/
+
+# Voice recordings: far too large for the repo, and the site would publish them.
+# Kept on this Mac only; they ship (later) through their own release path.
+ACIM-Voice-Recordings/
