@@ -381,6 +381,8 @@ struct TheWayWidgetView: View {
     @Environment(\.widgetFamily) private var family
     var entry: LessonEntry
 
+    private var isLong: Bool { entry.moment.text.count > 80 }
+
     var body: some View {
         switch family {
         case .accessoryInline:
@@ -388,18 +390,24 @@ struct TheWayWidgetView: View {
                 .containerBackground(for: .widget) { Color.clear }
 
         case .accessoryRectangular:
+            // A long idea (Lessons 347–360) needs the whole space:
+            // the label steps aside so the last line, where the idea arrives,
+            // is never cut.
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.moment.label)
-                    .font(.system(size: 9, weight: .semibold))
-                    .tracking(1.2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                    .widgetAccentable()
-                    .opacity(0.85)
+                if !isLong {
+                    Text(entry.moment.label)
+                        .font(.system(size: 9, weight: .semibold))
+                        .tracking(1.2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .widgetAccentable()
+                        .opacity(0.85)
+                }
                 Text(entry.moment.text)
-                    .font(.system(size: 13, weight: .regular, design: .serif))
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.7)
+                    .font(.system(size: isLong ? 12 : 13, weight: .regular, design: .serif))
+                    .lineLimit(isLong ? 4 : 3)
+                    .minimumScaleFactor(0.6)
+                    .allowsTightening(true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .containerBackground(for: .widget) { Color.clear }
